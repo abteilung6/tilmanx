@@ -51,3 +51,13 @@ jobs:
           excludeTitle: "true"
           checkAllCommitMessages: "true"
           accessToken: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check Commit Multiline Separator
+        uses: gsactions/commit-message-checker@v1
+        with:
+          pattern: '^[^\n]+(\n(\n[^\n]+)+)?$'
+          error: "Commit header and body must be separated by one blank line"
+          flags: "g"
+          excludeDescription: "true"
+          excludeTitle: "true"
+          checkAllCommitMessages: "true"
+          accessToken: ${{ secrets.GITHUB_TOKEN }}
