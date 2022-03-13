@@ -1,5 +1,9 @@
 # Contributing to tilmanx
 
+## Using the Project's Standard Commit Messages
+
+This project is using the [conventional commits](https://www.conventionalcommits.org/en/v1.0.0-beta.2/) standard.
+
 ## Pull Requests
 
 1. Fork the repo and create your branch (usually named `TIL-%jira reference%`) from `staging`.
