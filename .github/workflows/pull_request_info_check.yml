@@ -22,3 +22,12 @@ jobs:
           excludeDescription: "true"
           excludeTitle: "false"
           checkAllCommitMessages: "false"
+      - name: Check PR description
+        uses: gsactions/commit-message-checker@v1
+        with:
+          pattern: '^(\[WIP\] )?([A-Z]+-\d+) .{10,}$'
+          error: "Pull Request name must have meaningful description"
+          flags: "s"
+          excludeDescription: "true"
+          excludeTitle: "false"
+          checkAllCommitMessages: "false"
