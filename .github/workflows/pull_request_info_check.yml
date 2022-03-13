@@ -61,3 +61,13 @@ jobs:
           excludeTitle: "true"
           checkAllCommitMessages: "true"
           accessToken: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check Commit Line Length
+        uses: gsactions/commit-message-checker@v1
+        with:
+          pattern: '^[^:]+: [^\n]{0,50}(\n[^\n]{0,72})*$'
+          error: "The maximum line length of 50 (72) characters is exceeded."
+          flags: "g"
+          excludeDescription: "true"
+          excludeTitle: "true"
+          checkAllCommitMessages: "true"
+          accessToken: ${{ secrets.GITHUB_TOKEN }}
