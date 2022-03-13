@@ -8,9 +8,8 @@ const darkCodeTheme = require("prism-react-renderer/themes/dracula");
 const config = {
   title: "Tilmanx",
   tagline: "A chat app.",
-  // TODO: set my url after deployment
-  url: "https://github.com",
-  baseUrl: "/",
+  url: "https://abteilung6.github.io",
+  baseUrl: "/tilmanx/",
   onBrokenLinks: "throw",
   onBrokenMarkdownLinks: "warn",
   favicon: "img/favicon.ico",
