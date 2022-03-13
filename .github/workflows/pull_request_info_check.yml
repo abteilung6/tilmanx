@@ -41,3 +41,13 @@ jobs:
           excludeTitle: "true"
           checkAllCommitMessages: "true"
           accessToken: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check Commit First Word lowercase
+        uses: gsactions/commit-message-checker@v1
+        with:
+          pattern: "^[^:]+: [a-z].*$"
+          flags: "s"
+          error: "Commit message must start with a lowercase letter."
+          excludeDescription: "true"
+          excludeTitle: "true"
+          checkAllCommitMessages: "true"
+          accessToken: ${{ secrets.GITHUB_TOKEN }}
