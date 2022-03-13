@@ -1,0 +1,23 @@
+name: Test Docusaurus Deployment
+
+on:
+  pull_request:
+    branches:
+      - staging
+
+jobs:
+  test-deploy:
+    name: Test docusaurus deployment
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tilmanx-docs
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+      - name: Install dependencies
+        run: npm install
+      - name: Test build website
+        run: npm run build
