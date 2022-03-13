@@ -31,3 +31,13 @@ jobs:
           excludeDescription: "true"
           excludeTitle: "false"
           checkAllCommitMessages: "false"
+      - name: Check Commit Type
+        uses: gsactions/commit-message-checker@v1
+        with:
+          pattern: "^(feat|fix|docs|style|refactor|test|chore): .*$"
+          error: "Commit message first line must contain one of the following commit types: feat, fix, docs, style, refactor, test, chore."
+          flags: "s"
+          excludeDescription: "true"
+          excludeTitle: "true"
+          checkAllCommitMessages: "true"
+          accessToken: ${{ secrets.GITHUB_TOKEN }}
