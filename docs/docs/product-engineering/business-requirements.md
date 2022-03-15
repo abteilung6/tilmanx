@@ -52,3 +52,10 @@ Push notifications
 
 - A user should get a push notification for a new message
 - A user should get a push notification for a conversation request
+
+## Milestone
+
+The first milestone contains following requirements
+
+- Sign-up and login with mail verification
+- Live messenger
