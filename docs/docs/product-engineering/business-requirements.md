@@ -1,3 +1,7 @@
+---
+sidebar_position: 1
+---
+
 # Business Requirements
 
 Business requirements are criteria that are necessary to meet organizational objectives.
@@ -53,7 +57,7 @@ Push notifications
 - A user should get a push notification for a new message
 - A user should get a push notification for a conversation request
 
-## Milestone
+## Minimum Lovable Product
 
 The first milestone contains following requirements
 

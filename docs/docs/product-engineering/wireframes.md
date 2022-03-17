@@ -1,3 +1,7 @@
+---
+sidebar_position: 2
+---
+
 # Wireframes
 
 Basic visual interface guide that outlines the structure of an interface and the relationships between its pages.
