@@ -4,6 +4,8 @@ sidebar_position: 1
 
 # Entity Relationships
 
+![er model](/img/entity-relationship/er-model.png)
+
 User
 
 - email, password, firstname and lastname from registration process
