@@ -4,6 +4,8 @@ from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
+from authentication.models import Profile
+
 
 class RegisterSerializer(serializers.ModelSerializer):
     username = serializers.CharField(max_length=40, required=True)
@@ -15,10 +17,11 @@ class RegisterSerializer(serializers.ModelSerializer):
     )
     first_name = serializers.CharField(max_length=20, required=True)
     last_name = serializers.CharField(max_length=20, required=True)
+    is_verified = serializers.BooleanField(source='profile.is_verified', read_only=True)
 
     class Meta:
         model = User
-        fields = ('username', 'password', 'password2', 'email', 'first_name', 'last_name')
+        fields = ('username', 'password', 'password2', 'email', 'first_name', 'last_name', 'is_verified')
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password2']:
@@ -44,4 +47,5 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
 
+        Profile.objects.create(user=user, is_verified=False)
         return user
