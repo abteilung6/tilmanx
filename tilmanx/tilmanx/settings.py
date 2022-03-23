@@ -30,15 +30,19 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # django apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # third party app
     'rest_framework',
     'rest_framework_simplejwt',
     'drf_spectacular',
+    # project apps
+    'authentication',
 ]
 
 MIDDLEWARE = [
@@ -87,15 +91,24 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
+        # Checks the similarity between the password and a set of attributes of the user.
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
+        # Checks whether the password meets a minimum length. This validator is configured with a custom option:
+        # it now requires the minimum length to be nine characters, instead of the default eight.
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 8,
+        }
     },
     {
+        # Checks whether the password occurs in a list of common passwords.
+        # By default, it compares to an included list of 20,000 common passwords.
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
+        # Checks whether the password isn’t entirely numeric.
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
