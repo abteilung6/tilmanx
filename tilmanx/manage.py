@@ -3,9 +3,14 @@
 import os
 import sys
 
+from tilmanx.enum import Environment
+
 
 def main():
     """Run administrative tasks."""
+    if 'test' in sys.argv:
+        os.environ.setdefault('ENV_NAME', Environment.TESTING.value)
+
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'tilmanx.settings')
     try:
         from django.core.management import execute_from_command_line
