@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from django.utils import timezone
 
-from chat.enum import FriendshipStatus
+from chat.enum import FriendshipStatus, FriendshipAction
 from chat.models import Friendship
 from chat.serializers import FriendshipSerializer
 
@@ -55,5 +55,50 @@ class TestFriendshipSerializer(TestCase):
                 requester=requester, addressee=addressee, offered_at=friendship.offered_at, accepted_at=accepted_at
         ):
             self.assertEqual(serializer.is_valid(), expected, msg=serializer.errors)
+        # Clean
+        friendship.delete()
+
+    def test_update(self):
+        # [SUCCESS]
+        self._check_update(
+            self.requester, self.addressee, self.addressee, None, FriendshipAction.ACCEPT, True,
+            FriendshipStatus.ACCEPTED
+        )
+        # [FAIL]: friendship status is already accepted
+        self._check_update(
+            self.requester, self.addressee, self.addressee, datetime(2022, 12, 24, 0, 0, 0, 0, timezone.utc),
+            FriendshipAction.ACCEPT, False, None
+        )
+        # [FAIL]: only the addressee can accept the friendship
+        self._check_update(
+            self.requester, self.addressee, self.requester, None, FriendshipAction.ACCEPT, False, None
+        )
+        # [FAIL]: invalid friendship action
+        self._check_update(
+            self.requester, self.addressee, self.addressee, None, None, False, None
+        )
+
+    def _check_update(
+            self, requester: User, addressee: User, unverified_addressee: User, accepted_at: Optional[datetime],
+            friendship_action: Optional[FriendshipAction], expected_validation: bool,
+            expected_status: Optional[FriendshipStatus]
+    ):
+        # Arrange
+        friendship = Friendship.objects.create(requester=requester, addressee=addressee, accepted_at=accepted_at)
+        context = {
+            'user': unverified_addressee,
+            'action': friendship_action
+        }
+        # Act
+        serializer = FriendshipSerializer(friendship, data={}, context=context)
+        with self.subTest(
+                requester=requester, addressee=addressee, unverified_addressee=unverified_addressee,
+                friendship_action=friendship_action, expected_validation=expected_validation
+        ):
+            # Assert
+            self.assertEqual(serializer.is_valid(), expected_validation, msg=serializer.errors)
+            if expected_status:
+                serializer.save()
+                self.assertEqual(friendship.status, expected_status)
         # Clean
         friendship.delete()
