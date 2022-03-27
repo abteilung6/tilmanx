@@ -19,8 +19,8 @@ class TestFriendship(TestCase):
         # Arrange
         date = datetime(2022, 12, 24, 0, 0, 0, 0, timezone.utc)
         # Act && Assert
-        self._check_status( None, FriendshipStatus.OFFERED)
-        self._check_status( date, FriendshipStatus.ACCEPTED)
+        self._check_status(None, FriendshipStatus.OFFERED)
+        self._check_status(date, FriendshipStatus.ACCEPTED)
 
     def _check_status(self, accepted_at: Optional[datetime], expected: FriendshipStatus):
         friendship = Friendship(requester=self.requester, addressee=self.addressee)
