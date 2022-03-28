@@ -4,6 +4,7 @@ from django.db.models import Q
 from rest_framework import mixins, permissions
 from rest_framework.decorators import action
 from rest_framework import status
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
@@ -42,6 +43,16 @@ class FriendshipViewSet(
         serializer = self.get_serializer(friendships, many=True)
         return Response(serializer.data)
 
+    def retrieve(self, request, *args, **kwargs):
+        pk = kwargs.get('pk', None)
+        queryset: QuerySet = self.filter_queryset(self.get_queryset())
+        friendship = get_object_or_404(
+            queryset,
+            Q(pk=pk) & (Q(requester=self.request.user) | Q(addressee=self.request.user))
+        )
+        serializer = self.get_serializer(friendship)
+        return Response(serializer.data)
+
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -50,8 +61,16 @@ class FriendshipViewSet(
 
     @action(detail=True, methods=['PUT'])
     def accept(self, request, pk=None):
-        friendship = Friendship.objects.get(id=pk)
+        friendship = self.get_object()
         serializer = self.get_serializer(friendship, data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def destroy(self, request, *args, **kwargs):
+        instance: Friendship = self.get_object()
+        if instance.requester == self.request.user or instance.addressee == self.request.user:
+            instance.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
