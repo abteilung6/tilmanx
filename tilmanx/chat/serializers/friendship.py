@@ -51,6 +51,8 @@ class FriendshipSerializer(serializers.ModelSerializer):
 
         self._validate_forward_friendship(forward_friendship, errors)
         self._validate_backwards_friendship(backwards_friendship, errors)
+        if requester == addressee:
+            errors.setdefault('addressee_id', []).append('Friendship addressee and requester must be different.')
         if errors:
             raise serializers.ValidationError(errors)
         attrs['_requester'] = requester
