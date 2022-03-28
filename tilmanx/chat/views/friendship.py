@@ -1,4 +1,7 @@
-from rest_framework import mixins
+from django.db.models import QuerySet
+from django.db.models import Q
+
+from rest_framework import mixins, permissions
 from rest_framework.decorators import action
 from rest_framework import status
 from rest_framework.response import Response
@@ -14,6 +17,7 @@ class FriendshipViewSet(
 ):
     queryset = Friendship.objects.all()
     serializer_class = FriendshipSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get_serializer(self, *args, **kwargs):
         serializer_class = self.get_serializer_class()
@@ -31,6 +35,12 @@ class FriendshipViewSet(
         if self.action == 'accept':
             context['action'] = FriendshipAction.ACCEPT
         return context
+
+    def list(self, request, *args, **kwargs):
+        queryset: QuerySet = self.filter_queryset(self.get_queryset())
+        friendships = queryset.filter(Q(requester=self.request.user) | Q(addressee=self.request.user))
+        serializer = self.get_serializer(friendships, many=True)
+        return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
