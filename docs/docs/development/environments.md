@@ -26,3 +26,44 @@ Running django test with `python manage.py test` will automatically set the envi
 
 If you're using PyCharm, just hit `Edit Configurations` button and set the environment variable
 or use `Settings -> Languages & Frameworks -> Django`.
+
+## React Native
+
+See also https://reactnative.dev/docs/
+
+### Development
+
+Start Metro
+
+```
+npx react-native start
+```
+
+Start your application
+
+```
+npx react-native run-android
+```
+
+### Release
+
+Adding Keystore in directory `android/app`
+
+```
+keytool -genkeypair -v -storetype PKCS12 -keystore my-upload-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
+```
+
+Modify `gradle.properties`
+
+```
+MYAPP_UPLOAD_STORE_FILE=changeme
+MYAPP_UPLOAD_KEY_ALIAS=changeme
+MYAPP_UPLOAD_STORE_PASSWORD=changeme
+MYAPP_UPLOAD_KEY_PASSWORD=changeme
+```
+
+Build app in directory `android/`
+
+```
+./gradlew bundleRelease
+```
