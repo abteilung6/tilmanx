@@ -8,6 +8,7 @@ import {defaultTheme} from '../styles/theme';
 import {Button} from '../components/Button/Button';
 import {TextInput} from '../components/TextInput/TextInput';
 import {loginSchema} from '../lib/schema';
+import {useLoginMutation} from '../hooks/useAuthQuery';
 
 export const LoginScreen: React.FC<
   StackScreenProps<RootStackParamList, 'Login'>
@@ -18,7 +19,11 @@ export const LoginScreen: React.FC<
       password: '',
     },
     validationSchema: loginSchema,
-    onSubmit: values => console.log(values),
+    onSubmit: values => loginMutation.mutate(values),
+  });
+  const loginMutation = useLoginMutation({
+    onSuccess: values => console.log(values),
+    onError: err => console.log(err),
   });
 
   const render = (): React.ReactElement => {
