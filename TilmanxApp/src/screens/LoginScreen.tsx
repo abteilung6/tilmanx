@@ -1,15 +1,26 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {StackScreenProps} from '@react-navigation/stack';
+import {useFormik} from 'formik';
 
 import {RootStackParamList} from '../navigation/types';
 import {defaultTheme} from '../styles/theme';
 import {Button} from '../components/Button/Button';
 import {TextInput} from '../components/TextInput/TextInput';
+import {loginSchema} from '../lib/schema';
 
 export const LoginScreen: React.FC<
   StackScreenProps<RootStackParamList, 'Login'>
 > = () => {
+  const formik = useFormik({
+    initialValues: {
+      username: '',
+      password: '',
+    },
+    validationSchema: loginSchema,
+    onSubmit: values => console.log(values),
+  });
+
   const render = (): React.ReactElement => {
     return (
       <View style={styles.container}>
@@ -32,15 +43,38 @@ export const LoginScreen: React.FC<
     return (
       <View style={styles.formView}>
         <View>
-          <TextInput placeholder="Username" style={styles.textInput} />
+          {formik.errors.username && formik.touched.username && (
+            <Text style={{color: defaultTheme.solidColors.red}}>
+              {formik.errors.username}
+            </Text>
+          )}
+          <TextInput
+            placeholder="Username"
+            style={styles.textInput}
+            value={formik.values.username}
+            onChangeText={formik.handleChange('username')}
+            onBlur={formik.handleBlur('username')}
+          />
+          {formik.errors.password && formik.touched.password && (
+            <Text style={{color: defaultTheme.solidColors.red}}>
+              {formik.errors.password}
+            </Text>
+          )}
           <TextInput
             placeholder="Password"
             secureTextEntry
             style={styles.textInput}
+            value={formik.values.password}
+            onChangeText={formik.handleChange('password')}
+            onBlur={formik.handleBlur('password')}
           />
         </View>
         <View style={styles.button}>
-          <Button>Log in</Button>
+          <Button
+            disabled={!formik.isValid || !formik.touched}
+            onPress={() => formik.handleSubmit()}>
+            Log in
+          </Button>
         </View>
       </View>
     );
