@@ -8,7 +8,7 @@ import {defaultTheme} from '../styles/theme';
 
 export const WalkthroughScreen: React.FC<
   StackScreenProps<RootStackParamList, 'Walkthrough'>
-> = () => {
+> = ({navigation}) => {
   const render = (): React.ReactElement => {
     return (
       <View style={styles.container}>
@@ -34,7 +34,7 @@ export const WalkthroughScreen: React.FC<
           <Button variant="secondary">Sign up</Button>
         </View>
         <View style={styles.button}>
-          <Button>Login</Button>
+          <Button onPress={() => navigation.navigate('Login')}>Login</Button>
         </View>
       </View>
     );

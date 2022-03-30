@@ -3,6 +3,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 
 import {RootStackParamList} from './types';
 import {WalkthroughScreen} from '../screens/WalkthroughScreen';
+import {LoginScreen} from '../screens/LoginScreen';
 
 export const RootStack = createStackNavigator<RootStackParamList>();
 
@@ -13,6 +14,7 @@ export const RootNavigator: React.FC = () => {
         initialRouteName="Walkthrough"
         screenOptions={{headerShown: false}}>
         <RootStack.Screen name="Walkthrough" component={WalkthroughScreen} />
+        <RootStack.Screen name="Login" component={LoginScreen} />
       </RootStack.Navigator>
     );
   };
