@@ -1,6 +1,7 @@
 import React from 'react';
 import {QueryClient, QueryClientProvider} from 'react-query';
 
+import {AuthenticationProvider} from './hooks/authentication/AuthenticationProvider';
 import {Navigation} from './navigation';
 
 const App: React.FC = () => {
@@ -8,7 +9,9 @@ const App: React.FC = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Navigation />
+      <AuthenticationProvider>
+        <Navigation />
+      </AuthenticationProvider>
     </QueryClientProvider>
   );
 };

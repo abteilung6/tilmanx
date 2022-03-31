@@ -8,7 +8,7 @@ import {defaultTheme} from '../styles/theme';
 import {Button} from '../components/Button/Button';
 import {TextInput} from '../components/TextInput/TextInput';
 import {loginSchema} from '../lib/schema';
-import {useLoginMutation} from '../hooks/useAuthQuery';
+import {useAuthentication} from '../hooks/authentication/useAuthentication';
 
 export const LoginScreen: React.FC<
   StackScreenProps<RootStackParamList, 'Login'>
@@ -19,12 +19,9 @@ export const LoginScreen: React.FC<
       password: '',
     },
     validationSchema: loginSchema,
-    onSubmit: values => loginMutation.mutate(values),
+    onSubmit: values => login(values),
   });
-  const loginMutation = useLoginMutation({
-    onSuccess: values => console.log(values),
-    onError: err => console.log(err),
-  });
+  const {login, loading} = useAuthentication();
 
   const render = (): React.ReactElement => {
     return (
@@ -76,7 +73,7 @@ export const LoginScreen: React.FC<
         </View>
         <View style={styles.button}>
           <Button
-            disabled={!formik.isValid || !formik.touched}
+            disabled={!formik.isValid || !formik.touched || loading}
             onPress={() => formik.handleSubmit()}>
             Log in
           </Button>

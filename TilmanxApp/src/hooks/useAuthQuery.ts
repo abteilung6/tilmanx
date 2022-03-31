@@ -1,6 +1,12 @@
 import {useMutation, UseMutationOptions} from 'react-query';
 
-import {AuthApi, LoginRequest, LoginResponse} from '../api/authApi';
+import {
+  AuthApi,
+  LoginRequest,
+  LoginResponse,
+  RefreshTokenRequest,
+  RefreshTokenResponse,
+} from '../api/authApi';
 
 export const useLoginMutation = (
   options?: Omit<
@@ -12,3 +18,17 @@ export const useLoginMutation = (
     const {data} = await new AuthApi().login(variables);
     return data;
   }, options);
+
+export const useRefreshTokenMutation = (
+  options?: Omit<
+    UseMutationOptions<RefreshTokenResponse, Error, RefreshTokenRequest>,
+    'mutationFn'
+  >,
+) =>
+  useMutation<RefreshTokenResponse, Error, RefreshTokenRequest>(
+    async variables => {
+      const {data} = await new AuthApi().refresh(variables);
+      return data;
+    },
+    options,
+  );
