@@ -29,16 +29,19 @@ export interface AuthenticationProviderProps {
 
 export const accessTokenKey = '@tilmanx/access-token';
 export const refreshTokenKey = '@tilmanx/refresh-token';
+const refreshIntervall = 1000 * 60 * 5;
 
 export const AuthenticationProvider: React.FC<AuthenticationProviderProps> = ({
   children,
 }) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | undefined>();
+  const [refreshTimer, setRefreshTimer] = useState<NodeJS.Timer | undefined>();
   const loginMutation = useLoginMutation({
     onSuccess: data => {
       AsyncStorage.setItem(accessTokenKey, data.access);
       AsyncStorage.setItem(refreshTokenKey, data.refresh);
       setIsLoggedIn(true);
+      initializeIntervallForRefresh();
     },
   });
   const refreshTokenMutation = useRefreshTokenMutation({
@@ -46,11 +49,7 @@ export const AuthenticationProvider: React.FC<AuthenticationProviderProps> = ({
       AsyncStorage.setItem(accessTokenKey, data.access);
       setIsLoggedIn(true);
     },
-    onError: _error => {
-      AsyncStorage.removeItem(refreshTokenKey);
-      AsyncStorage.removeItem(accessTokenKey);
-      setIsLoggedIn(false);
-    },
+    onError: _error => logout(),
   });
 
   const login = useCallback(
@@ -61,20 +60,35 @@ export const AuthenticationProvider: React.FC<AuthenticationProviderProps> = ({
   );
 
   const logout = useCallback(() => {
+    if (refreshTimer) {
+      clearInterval(refreshTimer);
+    }
     AsyncStorage.removeItem(refreshTokenKey);
     AsyncStorage.removeItem(accessTokenKey);
     setIsLoggedIn(false);
-  }, []);
+  }, [refreshTimer]);
+
+  const initializeIntervallForRefresh = useCallback(async () => {
+    const refreshToken = await AsyncStorage.getItem(refreshTokenKey);
+    if (refreshToken === null) {
+      logout();
+    } else {
+      const intervallId = setInterval(() => {
+        refreshTokenMutation.mutate({refresh: refreshToken});
+      }, refreshIntervall);
+      setRefreshTimer(intervallId);
+    }
+  }, [logout, refreshTokenMutation]);
 
   const onMount = useCallback(async () => {
     const refreshToken = await AsyncStorage.getItem(refreshTokenKey);
     if (refreshToken) {
       refreshTokenMutation.mutate({refresh: refreshToken});
+      initializeIntervallForRefresh();
     } else {
-      AsyncStorage.removeItem(accessTokenKey);
-      setIsLoggedIn(false);
+      logout();
     }
-  }, [refreshTokenMutation]);
+  }, [initializeIntervallForRefresh, logout, refreshTokenMutation]);
 
   /**
    * Subcribe `AppState` in order to initilize the `isLoggedIn` state.
@@ -82,17 +96,24 @@ export const AuthenticationProvider: React.FC<AuthenticationProviderProps> = ({
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
       if (nextAppState === 'active') {
-        console.info('App has come to the foreground!');
+        console.debug(
+          '[AuthenticationProvider] App has come to the foreground!',
+        );
         onMount();
       } else {
-        console.info('App has come to the background!');
+        console.debug(
+          '[AuthenticationProvider] App has come to the background!',
+        );
+        if (refreshTimer) {
+          clearInterval(refreshTimer);
+        }
       }
     });
 
     return () => {
       subscription.remove();
     };
-  }, [onMount]);
+  }, [onMount, refreshTimer]);
 
   return (
     <AuthenticationContext.Provider
