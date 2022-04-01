@@ -3,10 +3,10 @@ import {createStackNavigator} from '@react-navigation/stack';
 
 import {RootStackParamList} from './types';
 import {useAuthentication} from '../hooks/authentication/useAuthentication';
+import {BottomTabNavigator} from './BottomTabNavigator';
 import {WalkthroughScreen} from '../screens/WalkthroughScreen';
 import {LoginScreen} from '../screens/LoginScreen';
 import {SplashScreen} from '../screens/SplashScreen';
-import {SettingsScreen} from '../screens/SettingsScreen';
 
 export const RootStack = createStackNavigator<RootStackParamList>();
 
@@ -47,9 +47,9 @@ export const RootNavigator: React.FC = () => {
   const renderForAuthorized = (): React.ReactElement => {
     return (
       <RootStack.Navigator
-        initialRouteName="Settings"
+        initialRouteName="Root"
         screenOptions={{headerShown: false}}>
-        <RootStack.Screen name="Settings" component={SettingsScreen} />
+        <RootStack.Screen name="Root" component={BottomTabNavigator} />
       </RootStack.Navigator>
     );
   };

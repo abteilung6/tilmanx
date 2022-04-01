@@ -2,13 +2,13 @@ import React from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {StackScreenProps} from '@react-navigation/stack';
 
-import {RootStackParamList} from '../navigation/types';
+import {BottomTabParamList} from '../navigation/types';
 import {useAuthentication} from '../hooks/authentication/useAuthentication';
 import {defaultTheme} from '../styles/theme';
 import Logo from '../assets/icon-logout.svg';
 
 export const SettingsScreen: React.FC<
-  StackScreenProps<RootStackParamList, 'Settings'>
+  StackScreenProps<BottomTabParamList, 'Settings'>
 > = () => {
   const {logout, loading} = useAuthentication();
   const render = (): React.ReactElement => {
