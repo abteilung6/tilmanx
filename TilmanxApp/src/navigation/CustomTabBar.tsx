@@ -1,11 +1,9 @@
 import React from 'react';
 import {BottomTabBarProps} from '@react-navigation/bottom-tabs';
 import {View, StyleSheet, Pressable} from 'react-native';
-import {SvgProps} from 'react-native-svg';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import {IconProps} from 'react-native-vector-icons/Icon';
 
-import MessageOutlineIcon from '../assets/tabs/message-icon-outline.svg';
-import ProfileOutlineIcon from '../assets/tabs/profile-icon-outline.svg';
-import SettingsOutlineIcon from '../assets/tabs/settings-icon-outline.svg';
 import {defaultTheme} from '../styles/theme';
 
 export const CostumTabBar: React.FC<BottomTabBarProps> = ({
@@ -23,24 +21,38 @@ export const CostumTabBar: React.FC<BottomTabBarProps> = ({
   };
 
   const renderTab = (routeName: string, index: number): React.ReactElement => {
+    const isFocused = state.index === index;
     return (
       <Pressable
         key={index}
         style={styles.pressable}
         onPress={() => navigation.navigate(routeName)}>
-        {getIconFor(routeName)}
+        {getIconFor(routeName, isFocused)}
       </Pressable>
     );
   };
 
-  const getIconFor = (routeName: string): React.ReactNode => {
-    const props: SvgProps = {width: 28, height: 28};
-    if (routeName === 'Conversations') {
-      return <MessageOutlineIcon width={22} height={22} />;
-    } else if (routeName === 'Contacts') {
-      return <ProfileOutlineIcon {...props} />;
-    } else if (routeName === 'Settings') {
-      return <SettingsOutlineIcon {...props} />;
+  const getIconFor = (
+    routeName: string,
+    isFocused: boolean,
+  ): React.ReactNode => {
+    const props: Pick<IconProps, 'size'> = {size: 32};
+    if (isFocused) {
+      if (routeName === 'Conversations') {
+        return <Ionicons name="chatbubbles-sharp" color="black" {...props} />;
+      } else if (routeName === 'Contacts') {
+        return <Ionicons name="people-sharp" color="black" {...props} />;
+      } else if (routeName === 'Settings') {
+        return <Ionicons name="settings-sharp" color="black" {...props} />;
+      }
+    } else {
+      if (routeName === 'Conversations') {
+        return <Ionicons name="chatbubbles-outline" {...props} />;
+      } else if (routeName === 'Contacts') {
+        return <Ionicons name="people-outline" {...props} />;
+      } else if (routeName === 'Settings') {
+        return <Ionicons name="settings-outline" {...props} />;
+      }
     }
   };
 
@@ -58,7 +70,7 @@ const styles = StyleSheet.create({
     backgroundColor: defaultTheme.solidColors.lightGray,
     flexDirection: 'row',
     paddingVertical: 10,
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
   pressable: {
