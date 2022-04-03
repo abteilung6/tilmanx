@@ -1,9 +1,9 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {StackScreenProps} from '@react-navigation/stack';
 
 import {BottomTabParamList} from '../../navigation/types';
-import {defaultTheme} from '../../styles/theme';
+import {AppBar} from '../../components/AppBar/AppBar';
 
 export const ConversationsScreen: React.FC<
   StackScreenProps<BottomTabParamList, 'Conversations'>
@@ -11,7 +11,7 @@ export const ConversationsScreen: React.FC<
   const render = (): React.ReactElement => {
     return (
       <View style={styles.container}>
-        <Text style={[defaultTheme.typography.h3, styles.title]}>Chats</Text>
+        <AppBar title="Messages" />
       </View>
     );
   };
@@ -22,10 +22,5 @@ export const ConversationsScreen: React.FC<
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 15,
-    marginHorizontal: 10,
-  },
-  title: {
-    marginBottom: 10,
   },
 });

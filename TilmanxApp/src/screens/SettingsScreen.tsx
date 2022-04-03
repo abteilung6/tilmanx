@@ -1,11 +1,12 @@
 import React from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {StackScreenProps} from '@react-navigation/stack';
+import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 
 import {BottomTabParamList} from '../navigation/types';
 import {useAuthentication} from '../hooks/authentication/useAuthentication';
 import {defaultTheme} from '../styles/theme';
-import Logo from '../assets/icon-logout.svg';
+import {AppBar} from '../components/AppBar/AppBar';
 
 export const SettingsScreen: React.FC<
   StackScreenProps<BottomTabParamList, 'Settings'>
@@ -14,13 +15,21 @@ export const SettingsScreen: React.FC<
   const render = (): React.ReactElement => {
     return (
       <View style={styles.container}>
-        <Text style={[defaultTheme.typography.h3, styles.title]}>Settings</Text>
-        <Pressable style={styles.pressable} disabled={loading} onPress={logout}>
-          <Logo width={24} height={24} fill={'red'} color="red" />
-          <View style={styles.textView}>
-            <Text style={[defaultTheme.typography.body1]}>Sign Out</Text>
-          </View>
-        </Pressable>
+        <AppBar title="Settings" />
+        <View style={styles.list}>
+          <Pressable
+            style={({pressed}) => [
+              styles.pressable,
+              {opacity: pressed ? 0.5 : 1},
+            ]}
+            disabled={loading}
+            onPress={logout}>
+            <AntDesignIcon name="logout" size={22} color="red" />
+            <Text style={[defaultTheme.typography.body1, styles.text]}>
+              Sign Out
+            </Text>
+          </Pressable>
+        </View>
       </View>
     );
   };
@@ -31,17 +40,15 @@ export const SettingsScreen: React.FC<
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 15,
-    marginHorizontal: 10,
   },
-  title: {
-    marginBottom: 10,
+  list: {
+    marginHorizontal: 25,
   },
   pressable: {
     flexDirection: 'row',
   },
-  textView: {
-    justifyContent: 'center',
-    marginHorizontal: 10,
+  text: {
+    color: defaultTheme.solidColors.red,
+    marginLeft: 10,
   },
 });
