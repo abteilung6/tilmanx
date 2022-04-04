@@ -3,9 +3,10 @@ import {StyleSheet, View} from 'react-native';
 import {StackScreenProps} from '@react-navigation/stack';
 
 import {BottomTabParamList} from '../../navigation/types';
-import {AppBar} from '../../components/AppBar/AppBar';
 import {useFriendshipsQuery} from '../../hooks/useFriendshipQuery';
+import {useUserMeQuery} from '../../hooks/useUserQuery';
 import {Contact} from '../../models/contact';
+import {AppBar} from '../../components/AppBar/AppBar';
 import {ContactList} from '../../components/ContactList/ContactList';
 
 export const ContactsScreen: React.FC<
@@ -13,8 +14,9 @@ export const ContactsScreen: React.FC<
 > = () => {
   const friendshipsQuery = useFriendshipsQuery();
   const friendships = friendshipsQuery.data || [];
-  // TODO: get `userId` from user profile
-  const contacts = Contact.fromFriendships(1, friendships);
+  const userMeQuery = useUserMeQuery();
+  const user = userMeQuery.data;
+  const contacts = Contact.fromFriendships(user ? user.id : NaN, friendships);
 
   const render = (): React.ReactElement => {
     return (

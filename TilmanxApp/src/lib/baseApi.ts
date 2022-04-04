@@ -10,6 +10,10 @@ export class BaseApi {
   public get route() {
     return `${this.tag}/`;
   }
+
+  public routeWith(subTag: string): string {
+    return `${this.route}${subTag}/`;
+  }
 }
 
 export class GenericModelApi<T> extends BaseApi {
