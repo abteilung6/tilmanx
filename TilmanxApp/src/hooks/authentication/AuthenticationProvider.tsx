@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {LoginRequest} from '../../api/authApi';
 import {useLoginMutation, useRefreshTokenMutation} from '../useAuthQuery';
+import {AsyncStorageKeys} from '../../constants/store';
 
 export interface AuthenticationContextProps {
   /**
@@ -27,8 +28,8 @@ export interface AuthenticationProviderProps {
   children?: React.ReactNode;
 }
 
-export const accessTokenKey = '@tilmanx/access-token';
-export const refreshTokenKey = '@tilmanx/refresh-token';
+export const accessTokenKey = AsyncStorageKeys.ACCESS_TOKEN;
+export const refreshTokenKey = AsyncStorageKeys.REFRESH_TOKEN;
 const refreshIntervall = 1000 * 60 * 5;
 
 export const AuthenticationProvider: React.FC<AuthenticationProviderProps> = ({
