@@ -47,19 +47,19 @@ export class Contact {
   private static getContact(userId: number, friendship: Friendship): Contact {
     if (userId === friendship.addressee_id) {
       return new Contact({
-        id: friendship.addressee_id,
-        username: friendship.addressee_username,
-        first_name: friendship.addressee_first_name,
-        last_name: friendship.addressee_last_name,
+        id: friendship.requester_id,
+        username: friendship.requester_username,
+        first_name: friendship.requester_first_name,
+        last_name: friendship.requester_last_name,
         friendship_id: friendship.id,
       });
     } else {
       // This condition relies on the `getContact` method.
       return new Contact({
-        id: friendship.requester_id,
-        username: friendship.requester_username,
-        first_name: friendship.requester_first_name,
-        last_name: friendship.requester_last_name,
+        id: friendship.addressee_id,
+        username: friendship.addressee_username,
+        first_name: friendship.addressee_first_name,
+        last_name: friendship.addressee_last_name,
         friendship_id: friendship.id,
       });
     }
