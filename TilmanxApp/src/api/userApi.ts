@@ -16,6 +16,6 @@ export class UserApi extends GenericModelApi<UserProperties> {
   }
 
   public me() {
-    return axiosInstance.get<UserProperties>(this.routeWith('me'));
+    return axiosInstance.get<UserProperties>(this.routeWithSubTag('me'));
   }
 }

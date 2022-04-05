@@ -5,6 +5,7 @@ export type RootStackParamList = {
   Root: undefined;
   Contacts: undefined;
   SearchContacts: undefined;
+  Profile: {userId: number};
 };
 
 export type BottomTabParamList = {

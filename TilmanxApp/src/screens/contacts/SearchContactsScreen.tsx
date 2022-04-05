@@ -11,7 +11,7 @@ import {Contact} from '../../models/contact';
 
 export const SearchContactsScreen: React.FC<
   StackScreenProps<RootStackParamList, 'SearchContacts'>
-> = () => {
+> = ({navigation}) => {
   const [searchValue, setSearchValue] = useState('');
   const userSearchQuery = useUserSearchQuery(
     {search: searchValue},
@@ -41,7 +41,10 @@ export const SearchContactsScreen: React.FC<
   const renderContacts = (): React.ReactElement => {
     return (
       <View style={styles.list}>
-        <ContactList contacts={contacts} />
+        <ContactList
+          contacts={contacts}
+          onPress={contact => navigation.push('Profile', {userId: contact.id})}
+        />
       </View>
     );
   };

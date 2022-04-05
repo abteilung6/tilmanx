@@ -6,4 +6,5 @@ export enum SolidColor {
   lightGray = '#F3F3F3',
   line = '#D7D7DC',
   red = '#FF375F',
+  black = '#090710',
 }

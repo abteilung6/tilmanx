@@ -2,7 +2,13 @@ import {TextStyle} from 'react-native';
 
 import {SolidColor} from './color';
 
-export type TypographyVariant = 'h1' | 'h2' | 'h3' | 'body1' | 'body2';
+export type TypographyVariant =
+  | 'h1'
+  | 'h2'
+  | 'h3'
+  | 'body1'
+  | 'body2'
+  | 'subtitle2';
 
 export const typography: Record<TypographyVariant, TextStyle> = {
   h1: {
@@ -41,6 +47,14 @@ export const typography: Record<TypographyVariant, TextStyle> = {
     fontStyle: 'normal',
     fontWeight: '400',
     fontSize: 16,
+    lineHeight: 24,
+    letterSpacing: -0.5,
+    color: SolidColor.gray,
+  },
+  subtitle2: {
+    fontStyle: 'normal',
+    fontWeight: '400',
+    fontSize: 14,
     lineHeight: 24,
     letterSpacing: -0.5,
     color: SolidColor.gray,

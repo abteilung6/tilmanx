@@ -11,7 +11,11 @@ export class BaseApi {
     return `${this.tag}/`;
   }
 
-  public routeWith(subTag: string): string {
+  public routeWithId(id: number): string {
+    return `${this.route}${id}/`;
+  }
+
+  public routeWithSubTag(subTag: string): string {
     return `${this.route}${subTag}/`;
   }
 }
@@ -19,6 +23,10 @@ export class BaseApi {
 export class GenericModelApi<T> extends BaseApi {
   constructor(tag: string) {
     super(tag);
+  }
+
+  public retrieve(id: number) {
+    return axiosInstance.get<T>(this.routeWithId(id));
   }
 
   public list<F extends object>(filterParams?: F) {

@@ -45,7 +45,10 @@ export const ContactsScreen: React.FC<
   const renderContacts = (): React.ReactNode => {
     return (
       <View style={styles.contacts}>
-        <ContactList contacts={contacts} />
+        <ContactList
+          contacts={contacts}
+          onPress={contact => navigation.push('Profile', {userId: contact.id})}
+        />
       </View>
     );
   };

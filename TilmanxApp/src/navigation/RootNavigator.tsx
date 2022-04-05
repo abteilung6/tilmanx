@@ -8,6 +8,7 @@ import {WalkthroughScreen} from '../screens/WalkthroughScreen';
 import {LoginScreen} from '../screens/LoginScreen';
 import {SplashScreen} from '../screens/SplashScreen';
 import {SearchContactsScreen} from '../screens/contacts/SearchContactsScreen';
+import {ProfileScreen} from '../screens/users/ProfileScreen';
 
 export const RootStack = createStackNavigator<RootStackParamList>();
 
@@ -55,6 +56,7 @@ export const RootNavigator: React.FC = () => {
           name="SearchContacts"
           component={SearchContactsScreen}
         />
+        <RootStack.Screen name="Profile" component={ProfileScreen} />
       </RootStack.Navigator>
     );
   };
