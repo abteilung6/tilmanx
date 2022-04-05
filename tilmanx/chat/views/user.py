@@ -10,7 +10,7 @@ from rest_framework.viewsets import GenericViewSet
 from chat.serializers import UserSerializer
 
 
-class UserViewSet(mixins.ListModelMixin, GenericViewSet):
+class UserViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = (permissions.IsAuthenticated,)
