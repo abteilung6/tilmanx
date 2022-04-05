@@ -23,11 +23,17 @@ export type ButtonProps = PressableProps & {
    * @default "primary"
    */
   variant?: ButtonVariant;
+  /**
+   * Set the button height.
+   * @default 48
+   */
+  height?: number;
 };
 
 export const Button: React.FC<ButtonProps> = ({
   children,
   variant = 'primary',
+  height = 48,
   ...props
 }) => {
   const render = (): React.ReactElement => {
@@ -37,6 +43,7 @@ export const Button: React.FC<ButtonProps> = ({
           styles.pressable,
           variantToPressableStyle[variant],
           {opacity: pressed || props.disabled ? 0.8 : 1},
+          {height: height},
         ]}
         {...props}>
         <Text style={[styles.text, variantToTextStyle[variant]]}>
@@ -72,7 +79,6 @@ const variantToTextStyle: Record<ButtonVariant, StyleProp<TextStyle>> = {
 const styles = StyleSheet.create({
   pressable: {
     borderRadius: 32,
-    height: 48,
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 5,
@@ -80,5 +86,6 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 14,
     fontWeight: '500',
+    marginHorizontal: 15,
   },
 });

@@ -1,23 +1,30 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {StackScreenProps} from '@react-navigation/stack';
 
 import {RootStackParamList} from '../../navigation/types';
-import {useUserQuery} from '../../hooks/useUserQuery';
+import {useUserFriendshipQuery, useUserQuery} from '../../hooks/useUserQuery';
 import {AppBar} from '../../components/AppBar/AppBar';
 import {Profile} from '../../components/Profile/Profile';
+import {Button} from '../../components/Button/Button';
+import {FriendshipStatus} from '../../models/friendship';
 
 export const ProfileScreen: React.FC<
   StackScreenProps<RootStackParamList, 'Profile'>
 > = ({route}) => {
   const userQuery = useUserQuery(route.params.userId);
   const user = userQuery.data;
+  const userFriendshipQuery = useUserFriendshipQuery(route.params.userId);
+  const friendship = userFriendshipQuery.data;
 
   const render = (): React.ReactElement => {
     return (
       <View style={styles.container}>
         <AppBar title="Profile" />
-        <View style={styles.innerContainer}>{renderProfile()}</View>
+        <View style={styles.innerContainer}>
+          {renderProfile()}
+          {renderActionBar()}
+        </View>
       </View>
     );
   };
@@ -25,6 +32,37 @@ export const ProfileScreen: React.FC<
   const renderProfile = (): React.ReactNode => {
     if (user) {
       return <Profile user={user} />;
+    }
+  };
+
+  const renderActionBar = (): React.ReactElement => {
+    return (
+      <View style={styles.actionBar}>
+        <View style={styles.action}>
+          <Text>Other actions..</Text>
+        </View>
+        <View style={styles.action}>{renderFriendshipButton()}</View>
+      </View>
+    );
+  };
+
+  const renderFriendshipButton = (): React.ReactNode => {
+    if (friendship) {
+      if (friendship.status === FriendshipStatus.Accepted) {
+        return (
+          <Button variant="secondary" height={40} disabled>
+            Following
+          </Button>
+        );
+      } else if (friendship.status === FriendshipStatus.Offered) {
+        return (
+          <Button variant="secondary" height={40} disabled>
+            Requested
+          </Button>
+        );
+      }
+    } else if (friendship === null) {
+      return <Button height={40}>Follow</Button>;
     }
   };
 
@@ -37,5 +75,13 @@ const styles = StyleSheet.create({
   },
   innerContainer: {
     marginHorizontal: 25,
+  },
+  actionBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
+  action: {
+    justifyContent: 'center',
   },
 });

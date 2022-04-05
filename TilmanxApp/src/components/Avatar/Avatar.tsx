@@ -4,15 +4,25 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import {defaultTheme} from '../../styles/theme';
 
-export interface AvatarProps {}
+export interface AvatarProps {
+  /**
+   * Size of icon
+   * @default "20"
+   */
+  size?: number;
+}
 
-export const Avatar: React.FC<AvatarProps> = ({}) => {
+export const Avatar: React.FC<AvatarProps> = ({size = 20}) => {
   const render = (): React.ReactElement => {
     return (
-      <View style={styles.container}>
+      <View
+        style={[
+          styles.container,
+          {height: size * 2, width: size * 2, borderRadius: size},
+        ]}>
         <Ionicons
           name="person-outline"
-          size={22}
+          size={size}
           color={defaultTheme.solidColors.white}
         />
       </View>
@@ -24,9 +34,6 @@ export const Avatar: React.FC<AvatarProps> = ({}) => {
 
 const styles = StyleSheet.create({
   container: {
-    height: 40,
-    width: 40,
-    borderRadius: 40 / 2,
     backgroundColor: defaultTheme.solidColors.line,
     justifyContent: 'center',
     alignItems: 'center',

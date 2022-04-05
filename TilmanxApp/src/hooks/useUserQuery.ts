@@ -1,6 +1,7 @@
 import {useQuery, UseQueryOptions} from 'react-query';
 
 import {UserApi, UserSearchParams} from '../api/userApi';
+import {Friendship} from '../models/friendship';
 import {User} from '../models/user';
 
 export const useUserQuery = (id: number, options?: UseQueryOptions<User>) => {
@@ -38,6 +39,26 @@ export const useUserMeQuery = (options?: UseQueryOptions<User>) => {
     async () => {
       const {data} = await new UserApi().me();
       return new User(data);
+    },
+    {
+      ...options,
+    },
+  );
+};
+
+export const useUserFriendshipQuery = (
+  id: number,
+  options?: UseQueryOptions<Friendship | null>,
+) => {
+  return useQuery<Friendship | null>(
+    ['users', id, 'friendship'],
+    async () => {
+      try {
+        const {data} = await new UserApi().friendship(id);
+        return new Friendship(data);
+      } catch (error) {
+        return null;
+      }
     },
     {
       ...options,

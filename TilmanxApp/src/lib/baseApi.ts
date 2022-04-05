@@ -15,8 +15,12 @@ export class BaseApi {
     return `${this.route}${id}/`;
   }
 
-  public routeWithSubTag(subTag: string): string {
-    return `${this.route}${subTag}/`;
+  public routeWithAction(action: string): string {
+    return `${this.route}${action}/`;
+  }
+
+  public routeWithDetailAction(id: number, action: string): string {
+    return `${this.route}${id}/${action}/`;
   }
 }
 

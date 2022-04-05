@@ -13,7 +13,7 @@ export const Profile: React.FC<ProfileProps> = ({user}) => {
   const render = (): React.ReactElement => {
     return (
       <View style={styles.container}>
-        <Avatar />
+        <Avatar size={24} />
         <View style={styles.textView}>
           <Text style={[defaultTheme.typography.body2, styles.title]}>
             {`${user.first_name} ${user.last_name}`}
