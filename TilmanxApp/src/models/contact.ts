@@ -1,4 +1,5 @@
 import {Friendship, FriendshipStatus} from './friendship';
+import {User} from './user';
 
 export interface ContactProperties {
   id: number;
@@ -62,5 +63,21 @@ export class Contact {
         friendship_id: friendship.id,
       });
     }
+  }
+
+  /**
+   * Turns users into contacts.
+   */
+  public static fromUsers(users: ReadonlyArray<User>): ReadonlyArray<Contact> {
+    return users.map(
+      user =>
+        new Contact({
+          id: user.id,
+          username: user.username,
+          first_name: user.first_name,
+          last_name: user.last_name,
+          friendship_id: NaN,
+        }),
+    );
   }
 }

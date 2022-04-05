@@ -3,6 +3,8 @@ export type RootStackParamList = {
   Walkthrough: undefined;
   Login: undefined;
   Root: undefined;
+  Contacts: undefined;
+  SearchContacts: undefined;
 };
 
 export type BottomTabParamList = {

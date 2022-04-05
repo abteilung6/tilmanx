@@ -7,6 +7,7 @@ import {BottomTabNavigator} from './BottomTabNavigator';
 import {WalkthroughScreen} from '../screens/WalkthroughScreen';
 import {LoginScreen} from '../screens/LoginScreen';
 import {SplashScreen} from '../screens/SplashScreen';
+import {SearchContactsScreen} from '../screens/contacts/SearchContactsScreen';
 
 export const RootStack = createStackNavigator<RootStackParamList>();
 
@@ -50,6 +51,10 @@ export const RootNavigator: React.FC = () => {
         initialRouteName="Root"
         screenOptions={{headerShown: false}}>
         <RootStack.Screen name="Root" component={BottomTabNavigator} />
+        <RootStack.Screen
+          name="SearchContacts"
+          component={SearchContactsScreen}
+        />
       </RootStack.Navigator>
     );
   };

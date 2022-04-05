@@ -1,10 +1,18 @@
 import {axiosInstance} from '../lib/axiosInstance';
-import {BaseApi} from '../lib/baseApi';
+import {GenericModelApi} from '../lib/baseApi';
 import {UserProperties} from '../models/user';
 
-export class UserApi extends BaseApi {
+export interface UserSearchParams {
+  search: string;
+}
+
+export class UserApi extends GenericModelApi<UserProperties> {
   constructor() {
     super('users');
+  }
+
+  public search(params: UserSearchParams) {
+    return this.list<UserSearchParams>(params);
   }
 
   public me() {
