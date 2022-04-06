@@ -55,4 +55,15 @@ export class Friendship {
     this.updated_at = new Date(props.updated_at);
     this.status = props.status;
   }
+
+  public static getFriendshipRequestsFor(
+    friendships: ReadonlyArray<Friendship>,
+    user_id: number,
+  ): ReadonlyArray<Friendship> {
+    return friendships.filter(
+      friendship =>
+        friendship.status === FriendshipStatus.Offered &&
+        friendship.addressee_id === user_id,
+    );
+  }
 }

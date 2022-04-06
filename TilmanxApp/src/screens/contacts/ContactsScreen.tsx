@@ -33,6 +33,13 @@ export const ContactsScreen: React.FC<
     return (
       <View style={styles.rightAppBar}>
         <Ionicons
+          name="person-add-outline"
+          size={24}
+          color={defaultTheme.solidColors.gray}
+          style={styles.icon}
+          onPress={() => navigation.navigate('ContactRequests')}
+        />
+        <Ionicons
           name="search-outline"
           size={24}
           color={defaultTheme.solidColors.gray}

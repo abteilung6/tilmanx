@@ -1,3 +1,4 @@
+import {axiosInstance} from '../lib/axiosInstance';
 import {GenericModelApi} from '../lib/baseApi';
 import {FriendshipProperties} from '../models/friendship';
 
@@ -8,5 +9,11 @@ export type UpstreamCreateFriendshipProperties = Pick<
 export class FriendshipApi extends GenericModelApi<FriendshipProperties> {
   constructor() {
     super('friendships');
+  }
+
+  public accept(friendshipId: number) {
+    return axiosInstance.put<FriendshipProperties>(
+      this.routeWithDetailAction(friendshipId, 'accept'),
+    );
   }
 }
