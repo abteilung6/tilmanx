@@ -4,10 +4,11 @@ import {StackScreenProps} from '@react-navigation/stack';
 
 import {RootStackParamList} from '../../navigation/types';
 import {useUserFriendshipQuery, useUserQuery} from '../../hooks/useUserQuery';
+import {useCreateFriendshipMutation} from '../../hooks/useFriendshipQuery';
+import {FriendshipStatus} from '../../models/friendship';
 import {AppBar} from '../../components/AppBar/AppBar';
 import {Profile} from '../../components/Profile/Profile';
 import {Button} from '../../components/Button/Button';
-import {FriendshipStatus} from '../../models/friendship';
 
 export const ProfileScreen: React.FC<
   StackScreenProps<RootStackParamList, 'Profile'>
@@ -16,6 +17,9 @@ export const ProfileScreen: React.FC<
   const user = userQuery.data;
   const userFriendshipQuery = useUserFriendshipQuery(route.params.userId);
   const friendship = userFriendshipQuery.data;
+  const createFriendshipMutation = useCreateFriendshipMutation({
+    onSettled: () => userFriendshipQuery.refetch(),
+  });
 
   const render = (): React.ReactElement => {
     return (
@@ -62,7 +66,15 @@ export const ProfileScreen: React.FC<
         );
       }
     } else if (friendship === null) {
-      return <Button height={40}>Follow</Button>;
+      return (
+        <Button
+          height={40}
+          onPress={() =>
+            createFriendshipMutation.mutate({addressee_id: route.params.userId})
+          }>
+          Follow
+        </Button>
+      );
     }
   };
 

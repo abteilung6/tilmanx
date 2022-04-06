@@ -1,6 +1,14 @@
-import {UseQueryOptions, useQuery} from 'react-query';
+import {
+  UseQueryOptions,
+  useQuery,
+  UseMutationOptions,
+  useMutation,
+} from 'react-query';
 
-import {FriendshipApi} from '../api/friendshipApi';
+import {
+  FriendshipApi,
+  UpstreamCreateFriendshipProperties,
+} from '../api/friendshipApi';
 import {Friendship} from '../models/friendship';
 
 export const useFriendshipsQuery = (
@@ -17,3 +25,20 @@ export const useFriendshipsQuery = (
     },
   );
 };
+
+export const useCreateFriendshipMutation = (
+  options?: Omit<
+    UseMutationOptions<Friendship, Error, UpstreamCreateFriendshipProperties>,
+    'mutationFn'
+  >,
+) =>
+  useMutation<Friendship, Error, UpstreamCreateFriendshipProperties>(
+    async variables => {
+      const {data} =
+        await new FriendshipApi().post<UpstreamCreateFriendshipProperties>(
+          variables,
+        );
+      return new Friendship(data);
+    },
+    options,
+  );
