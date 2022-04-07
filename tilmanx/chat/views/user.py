@@ -25,7 +25,7 @@ class UserViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewS
         serializer = self.get_serializer(request.user)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    @action(detail=True, methods=['Get'])
+    @action(detail=True, methods=['GET'])
     def friendship(self, request, pk=None):
         user: User = self.get_object()
         friendship = get_object_or_404(
