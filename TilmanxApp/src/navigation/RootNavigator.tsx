@@ -3,10 +3,13 @@ import {createStackNavigator} from '@react-navigation/stack';
 
 import {RootStackParamList} from './types';
 import {useAuthentication} from '../hooks/authentication/useAuthentication';
+import {BottomTabNavigator} from './BottomTabNavigator';
 import {WalkthroughScreen} from '../screens/WalkthroughScreen';
 import {LoginScreen} from '../screens/LoginScreen';
 import {SplashScreen} from '../screens/SplashScreen';
-import {SettingsScreen} from '../screens/SettingsScreen';
+import {SearchContactsScreen} from '../screens/contacts/SearchContactsScreen';
+import {ProfileScreen} from '../screens/users/ProfileScreen';
+import {ContactRequestsScreen} from '../screens/contacts/ContactRequestsScreen';
 
 export const RootStack = createStackNavigator<RootStackParamList>();
 
@@ -47,9 +50,18 @@ export const RootNavigator: React.FC = () => {
   const renderForAuthorized = (): React.ReactElement => {
     return (
       <RootStack.Navigator
-        initialRouteName="Settings"
+        initialRouteName="Root"
         screenOptions={{headerShown: false}}>
-        <RootStack.Screen name="Settings" component={SettingsScreen} />
+        <RootStack.Screen name="Root" component={BottomTabNavigator} />
+        <RootStack.Screen
+          name="SearchContacts"
+          component={SearchContactsScreen}
+        />
+        <RootStack.Screen
+          name="ContactRequests"
+          component={ContactRequestsScreen}
+        />
+        <RootStack.Screen name="Profile" component={ProfileScreen} />
       </RootStack.Navigator>
     );
   };

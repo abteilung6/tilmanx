@@ -64,8 +64,8 @@ jobs:
       - name: Check Commit Line Length
         uses: gsactions/commit-message-checker@v1
         with:
-          pattern: '^[^:]+: [^\n]{0,50}(\n[^\n]{0,72})*$'
-          error: "The maximum line length of 50 (72) characters is exceeded."
+          pattern: '^[^:]+: [^\n]{0,140}(\n[^\n]{0,170})*$'
+          error: "The maximum line length of 140 (170) characters is exceeded."
           flags: "g"
           excludeDescription: "true"
           excludeTitle: "true"
