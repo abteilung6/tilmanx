@@ -8,7 +8,12 @@ import {
   useUserMeQuery,
   useUserQuery,
 } from '../../hooks/useUserQuery';
-import {useCreateFriendshipMutation} from '../../hooks/useFriendshipQuery';
+import {
+  useAcceptFriendshipMutation,
+  useCreateFriendshipMutation,
+  useDeclineFriendshipMutation,
+  useFriendshipsQuery,
+} from '../../hooks/useFriendshipQuery';
 import {FriendshipStatus} from '../../models/friendship';
 import {AppBar} from '../../components/AppBar/AppBar';
 import {Profile} from '../../components/Profile/Profile';
@@ -20,11 +25,27 @@ export const ProfileScreen: React.FC<
   const userQuery = useUserQuery(route.params.userId);
   const user = userQuery.data;
   const userFriendshipQuery = useUserFriendshipQuery(route.params.userId);
-  const friendship = userFriendshipQuery.data;
+  const userFriendship = userFriendshipQuery.data;
   const userMeQuery = useUserMeQuery();
   const me = userMeQuery.data;
+  const friendshipsQuery = useFriendshipsQuery();
   const createFriendshipMutation = useCreateFriendshipMutation({
-    onSettled: () => userFriendshipQuery.refetch(),
+    onSettled: () => {
+      userFriendshipQuery.refetch();
+      friendshipsQuery.refetch();
+    },
+  });
+  const acceptFriendshipMutation = useAcceptFriendshipMutation({
+    onSettled: () => {
+      userFriendshipQuery.refetch();
+      friendshipsQuery.refetch();
+    },
+  });
+  const declineFriendshipMutation = useDeclineFriendshipMutation({
+    onSettled: () => {
+      userFriendshipQuery.refetch();
+      friendshipsQuery.refetch();
+    },
   });
 
   const render = (): React.ReactElement => {
@@ -59,21 +80,42 @@ export const ProfileScreen: React.FC<
   };
 
   const renderFriendshipButton = (): React.ReactNode => {
-    if (friendship) {
-      if (friendship.status === FriendshipStatus.Accepted) {
+    if (userFriendship && me) {
+      if (userFriendship.status === FriendshipStatus.Accepted) {
         return (
-          <Button variant="secondary" height={40} disabled>
-            Following
+          <Button
+            variant="secondary"
+            height={40}
+            onPress={() => declineFriendshipMutation.mutate(userFriendship.id)}>
+            Unfollow
           </Button>
         );
-      } else if (friendship.status === FriendshipStatus.Offered) {
-        return (
-          <Button variant="secondary" height={40} disabled>
-            Requested
-          </Button>
-        );
+      } else if (userFriendship.status === FriendshipStatus.Offered) {
+        if (userFriendship.addressee_id === me.id) {
+          return (
+            <Button
+              variant="secondary"
+              height={40}
+              onPress={() =>
+                acceptFriendshipMutation.mutate(userFriendship.id)
+              }>
+              Accept
+            </Button>
+          );
+        } else {
+          return (
+            <Button
+              variant="secondary"
+              height={40}
+              onPress={() =>
+                declineFriendshipMutation.mutate(userFriendship.id)
+              }>
+              Requested
+            </Button>
+          );
+        }
       }
-    } else if (friendship === null) {
+    } else if (userFriendship === null) {
       return (
         <Button
           height={40}
