@@ -1,0 +1,41 @@
+name: Build Android APK on Staging
+on:
+  push:
+    branches:
+      - staging
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      KEYSTORE_STORE_FILE_BASE64: ${{secrets.KEYSTORE_STORE_FILE_BASE64}}
+      KEYSTORE_STORE_FILE: ${{secrets.KEYSTORE_STORE_FILE}}
+    steps:
+      - name: Check secrets
+        run: |
+          echo $key1
+          echo $key2
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+      - name: Install dependencies
+        run: |
+          cd TilmanxApp &&
+          npm install
+      - name: Create Keystore
+        run: |
+          cd TilmanxApp/android
+          echo $KEYSTORE_STORE_FILE_BASE64 | base64 --decode > app/$KEYSTORE_STORE_FILE
+      - name: Build Packages
+        run: |
+          cd TilmanxApp/android
+          ./gradlew assembleStagingRelease -PMYAPP_UPLOAD_STORE_FILE='${{ secrets.KEYSTORE_STORE_FILE }}' -PMYAPP_UPLOAD_KEY_ALIAS='${{ secrets.SIGNING_KEY_ALIAS }}' -PMYAPP_UPLOAD_STORE_PASSWORD='${{ secrets.SIGNING_STORE_PASSWORD }}' -PMYAPP_UPLOAD_KEY_PASSWORD='${{ secrets.SIGNING_KEY_PASSWORD }}'
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: tilmanx-staging.apk
+          path: TilmanxApp/android/app/build/outputs/apk/staging/release/app-staging-release.apk
