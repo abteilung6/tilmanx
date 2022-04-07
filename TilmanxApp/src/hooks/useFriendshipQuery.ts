@@ -50,3 +50,11 @@ export const useAcceptFriendshipMutation = (
     const {data} = await new FriendshipApi().accept(variables);
     return new Friendship(data);
   }, options);
+
+export const useDeclineFriendshipMutation = (
+  options?: Omit<UseMutationOptions<any, Error, number>, 'mutationFn'>,
+) =>
+  useMutation<any, Error, number>(async variables => {
+    const {data} = await new FriendshipApi().decline(variables);
+    return data;
+  }, options);

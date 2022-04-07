@@ -42,4 +42,8 @@ export class GenericModelApi<T> extends BaseApi {
   public post<D>(data: D) {
     return axiosInstance.post<T>(this.route, data);
   }
+
+  public delete(id: number) {
+    return axiosInstance.delete(this.routeWithId(id));
+  }
 }

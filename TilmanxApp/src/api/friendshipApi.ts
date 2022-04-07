@@ -16,4 +16,8 @@ export class FriendshipApi extends GenericModelApi<FriendshipProperties> {
       this.routeWithDetailAction(friendshipId, 'accept'),
     );
   }
+
+  public decline(friendshipId: number) {
+    return this.delete(friendshipId);
+  }
 }

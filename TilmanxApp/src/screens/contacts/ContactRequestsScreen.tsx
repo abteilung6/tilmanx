@@ -6,6 +6,7 @@ import {RootStackParamList} from '../../navigation/types';
 
 import {
   useAcceptFriendshipMutation,
+  useDeclineFriendshipMutation,
   useFriendshipsQuery,
 } from '../../hooks/useFriendshipQuery';
 import {useUserMeQuery} from '../../hooks/useUserQuery';
@@ -27,6 +28,9 @@ export const ContactRequestsScreen: React.FC<
   const acceptFriendshipMutation = useAcceptFriendshipMutation({
     onSettled: () => friendshipsQuery.refetch(),
   });
+  const declineFriendshipMutation = useDeclineFriendshipMutation({
+    onSettled: () => friendshipsQuery.refetch(),
+  });
 
   const render = (): React.ReactElement => {
     return (
@@ -44,6 +48,9 @@ export const ContactRequestsScreen: React.FC<
           friendshipRequests={friendshipRequests}
           onAccept={friendship =>
             acceptFriendshipMutation.mutate(friendship.id)
+          }
+          onDecline={friendship =>
+            declineFriendshipMutation.mutate(friendship.id)
           }
         />
       </View>
