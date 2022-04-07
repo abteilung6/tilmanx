@@ -1,5 +1,17 @@
 apply plugin: "com.android.application"
 
+// React Native Config
+project.ext.envConfigFiles = [
+    productionrelease: ".env.production",
+    productiondebug: ".env.production",
+    stagingrelease: ".env.staging",
+    stagingdebug: ".env.staging",
+    developmentrelease: ".env.development",
+    developmentdebug: ".env.development",
+]
+
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
+
 import com.android.build.OutputFile
 
 /**
@@ -130,6 +142,13 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
+    flavorDimensions "default"
+    productFlavors {
+        development {}
+        production {}
+        staging {}
+    }
+
     defaultConfig {
         applicationId "com.tilmanxapp"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -164,6 +183,7 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
+            matchingFallbacks = ['debug', 'release']
             if (nativeArchitectures) {
                 ndk {
                     abiFilters nativeArchitectures.split(',')

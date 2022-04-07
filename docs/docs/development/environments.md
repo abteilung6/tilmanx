@@ -33,16 +33,31 @@ See also https://reactnative.dev/docs/
 
 ### Development
 
+Configure your envinronment file
+
+- `.env.development`, `.env.staging`, `.env.production`
+
+```
+// .env.development
+API_URL=http://localhost:8000/api/
+```
+
 Start Metro
 
 ```
 npx react-native start
 ```
 
-Start your application
+Start your application with your flavor
 
 ```
-npx react-native run-android
+npm run android
+npm run android:development
+npm run android:development-release
+npm run android:staging
+npm run android:staging-release
+npm run android:production
+npm run android:production-release
 ```
 
 ### Release
@@ -53,7 +68,7 @@ Adding Keystore in directory `android/app`
 keytool -genkeypair -v -storetype PKCS12 -keystore my-upload-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
 ```
 
-Modify `gradle.properties`
+Modify `gradle.properties` or `local.properties`.
 
 ```
 MYAPP_UPLOAD_STORE_FILE=changeme
@@ -65,5 +80,10 @@ MYAPP_UPLOAD_KEY_PASSWORD=changeme
 Build app in directory `android/`
 
 ```
-./gradlew bundleRelease
+./gradlew assembleDevelopmentRelease
+./gradlew assembleDevelopmentDebug
+./gradlew assembleStagingRelease
+./gradlew assembleStagingDebug
+./gradlew assembleProductionRelease
+./gradlew assembleProductionDebug
 ```

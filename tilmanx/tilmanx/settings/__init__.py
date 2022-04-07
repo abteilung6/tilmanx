@@ -21,3 +21,8 @@ else:
     # environment not specified
     from .development import *
     print('Environment: Development (Fallback)')
+
+try:
+    from .local import *
+except ImportError:
+    pass
