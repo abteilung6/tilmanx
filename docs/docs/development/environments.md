@@ -68,7 +68,7 @@ Adding Keystore in directory `android/app`
 keytool -genkeypair -v -storetype PKCS12 -keystore my-upload-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
 ```
 
-Modify `gradle.properties`
+Modify `gradle.properties` or `local.properties`.
 
 ```
 MYAPP_UPLOAD_STORE_FILE=changeme
