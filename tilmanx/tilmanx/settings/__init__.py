@@ -22,4 +22,7 @@ else:
     from .development import *
     print('Environment: Development (Fallback)')
 
-from .local import *
+try:
+    from .local import *
+except ImportError:
+    pass
