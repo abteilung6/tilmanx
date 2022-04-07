@@ -1,10 +1,10 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import {EnvironmentConfig} from './environment';
 import {AsyncStorageKeys} from '../constants/store';
 
-// TODO: use environment
-const apiBaseUrl = 'http://192.168.2.100:8000/api/';
+const apiBaseUrl = EnvironmentConfig.api_url;
 
 const headers = {
   'Content-Type': 'application/json',
