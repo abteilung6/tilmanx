@@ -43,7 +43,9 @@ export const SearchContactsScreen: React.FC<
       <View style={styles.list}>
         <ContactList
           contacts={contacts}
+          refreshing={userSearchQuery.isFetching}
           onPress={contact => navigation.push('Profile', {userId: contact.id})}
+          onRefresh={() => userSearchQuery.refetch()}
         />
       </View>
     );

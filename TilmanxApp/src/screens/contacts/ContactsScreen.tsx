@@ -55,6 +55,8 @@ export const ContactsScreen: React.FC<
         <ContactList
           contacts={contacts}
           onPress={contact => navigation.push('Profile', {userId: contact.id})}
+          refreshing={friendshipsQuery.isFetching}
+          onRefresh={() => friendshipsQuery.refetch()}
         />
       </View>
     );

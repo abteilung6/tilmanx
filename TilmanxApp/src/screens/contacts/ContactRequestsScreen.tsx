@@ -52,6 +52,8 @@ export const ContactRequestsScreen: React.FC<
           onDecline={friendship =>
             declineFriendshipMutation.mutate(friendship.id)
           }
+          refreshing={friendshipsQuery.isFetching}
+          onRefresh={() => friendshipsQuery.refetch()}
         />
       </View>
     );
