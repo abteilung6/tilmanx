@@ -3,7 +3,11 @@ import {StyleSheet, Text, View} from 'react-native';
 import {StackScreenProps} from '@react-navigation/stack';
 
 import {RootStackParamList} from '../../navigation/types';
-import {useUserFriendshipQuery, useUserQuery} from '../../hooks/useUserQuery';
+import {
+  useUserFriendshipQuery,
+  useUserMeQuery,
+  useUserQuery,
+} from '../../hooks/useUserQuery';
 import {useCreateFriendshipMutation} from '../../hooks/useFriendshipQuery';
 import {FriendshipStatus} from '../../models/friendship';
 import {AppBar} from '../../components/AppBar/AppBar';
@@ -17,6 +21,8 @@ export const ProfileScreen: React.FC<
   const user = userQuery.data;
   const userFriendshipQuery = useUserFriendshipQuery(route.params.userId);
   const friendship = userFriendshipQuery.data;
+  const userMeQuery = useUserMeQuery();
+  const me = userMeQuery.data;
   const createFriendshipMutation = useCreateFriendshipMutation({
     onSettled: () => userFriendshipQuery.refetch(),
   });
@@ -39,15 +45,17 @@ export const ProfileScreen: React.FC<
     }
   };
 
-  const renderActionBar = (): React.ReactElement => {
-    return (
-      <View style={styles.actionBar}>
-        <View style={styles.action}>
-          <Text>Other actions..</Text>
+  const renderActionBar = (): React.ReactNode => {
+    if (user && me && user.id !== me.id) {
+      return (
+        <View style={styles.actionBar}>
+          <View style={styles.action}>
+            <Text>Other actions..</Text>
+          </View>
+          <View style={styles.action}>{renderFriendshipButton()}</View>
         </View>
-        <View style={styles.action}>{renderFriendshipButton()}</View>
-      </View>
-    );
+      );
+    }
   };
 
   const renderFriendshipButton = (): React.ReactNode => {
