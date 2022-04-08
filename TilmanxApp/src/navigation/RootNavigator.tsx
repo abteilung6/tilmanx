@@ -10,6 +10,7 @@ import {SplashScreen} from '../screens/SplashScreen';
 import {SearchContactsScreen} from '../screens/contacts/SearchContactsScreen';
 import {ProfileScreen} from '../screens/users/ProfileScreen';
 import {ContactRequestsScreen} from '../screens/contacts/ContactRequestsScreen';
+import {SignupScreen} from '../screens/SignupScreen';
 
 export const RootStack = createStackNavigator<RootStackParamList>();
 
@@ -43,6 +44,7 @@ export const RootNavigator: React.FC = () => {
         screenOptions={{headerShown: false}}>
         <RootStack.Screen name="Walkthrough" component={WalkthroughScreen} />
         <RootStack.Screen name="Login" component={LoginScreen} />
+        <RootStack.Screen name="Signup" component={SignupScreen} />
       </RootStack.Navigator>
     );
   };
