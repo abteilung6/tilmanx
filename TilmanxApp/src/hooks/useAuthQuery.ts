@@ -6,6 +6,8 @@ import {
   LoginResponse,
   RefreshTokenRequest,
   RefreshTokenResponse,
+  RegisterRequest,
+  RegisterResponse,
 } from '../api/authApi';
 
 export const useLoginMutation = (
@@ -32,3 +34,14 @@ export const useRefreshTokenMutation = (
     },
     options,
   );
+
+export const useRegisterMutation = (
+  options?: Omit<
+    UseMutationOptions<RegisterResponse, Error, RegisterRequest>,
+    'mutationFn'
+  >,
+) =>
+  useMutation<RegisterResponse, Error, RegisterRequest>(async variables => {
+    const {data} = await new AuthApi().register(variables);
+    return data;
+  }, options);

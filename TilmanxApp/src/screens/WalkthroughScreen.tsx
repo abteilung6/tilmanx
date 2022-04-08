@@ -31,7 +31,11 @@ export const WalkthroughScreen: React.FC<
     return (
       <View style={styles.buttonsView}>
         <View style={styles.button}>
-          <Button variant="secondary">Sign up</Button>
+          <Button
+            variant="secondary"
+            onPress={() => navigation.navigate('Signup')}>
+            Sign up
+          </Button>
         </View>
         <View style={styles.button}>
           <Button onPress={() => navigation.navigate('Login')}>Login</Button>
