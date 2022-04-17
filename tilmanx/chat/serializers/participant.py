@@ -56,3 +56,13 @@ class ParticipantSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(errors)
 
         return attrs
+
+    @classmethod
+    def create_participant_for_conversation(cls, user: User, conversation: Conversation) -> Participant:
+        required_data = {
+            'conversation': conversation.id,
+            'user': user.id
+        }
+        serializer = ParticipantSerializer(data=required_data)
+        serializer.is_valid(raise_exception=True)
+        return serializer.save()

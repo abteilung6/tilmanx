@@ -1,6 +1,7 @@
 from collections import OrderedDict
 from typing import Dict
 
+from django.contrib.auth.models import User
 from rest_framework import serializers
 
 from chat.enum import ConversationType
@@ -8,7 +9,6 @@ from chat.models import Conversation
 
 
 class ConversationSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Conversation
 
@@ -51,3 +51,15 @@ class ConversationSerializer(serializers.ModelSerializer):
                 return value
             else:
                 raise serializers.ValidationError("Currently conversations with type {value} are not allowed.")
+
+    @classmethod
+    def create_private_conversation_with(cls, creator: User) -> Conversation:
+        required_data = {
+            'type': ConversationType.PRIVATE.value
+        }
+        context = {
+            'creator': creator
+        }
+        serializer = ConversationSerializer(data=required_data, context=context)
+        serializer.is_valid(raise_exception=True)
+        return serializer.save()
