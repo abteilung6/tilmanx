@@ -22,6 +22,9 @@ class ConversationSerializer(serializers.ModelSerializer):
             ('creator', serializers.PrimaryKeyRelatedField(read_only=True)),
             ('created_at', serializers.DateTimeField(read_only=True)),
             ('updated_at', serializers.DateTimeField(read_only=True)),
+            ('latest_message', serializers.CharField(
+                source="latest_message.message", read_only=True, allow_null=True)
+             ),
         ])
 
         return fields

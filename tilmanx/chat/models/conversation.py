@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.contrib.auth.models import User
 from typing import TYPE_CHECKING, Optional
@@ -5,7 +6,7 @@ from typing import TYPE_CHECKING, Optional
 from chat.enum import ConversationType
 
 if TYPE_CHECKING:
-    from chat.models import Friendship
+    from chat.models import Friendship, Message
 
 
 class Conversation(models.Model):
@@ -22,4 +23,11 @@ class Conversation(models.Model):
                 type=ConversationType.PRIVATE.value, participant__user=first_user
             ).get(participant__user=second_user)
         except cls.DoesNotExist:
+            return None
+
+    @property
+    def latest_message(self) -> Optional['Message']:
+        try:
+            return self.message_set.latest('created_at')
+        except ObjectDoesNotExist:
             return None
