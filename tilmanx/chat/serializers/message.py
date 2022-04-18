@@ -14,7 +14,6 @@ class MessageSerializer(serializers.ModelSerializer):
     def get_fields(self) -> Dict[str, serializers.Field]:
         # field changes
         conversation_readonly = True if self.instance else False
-        sender_readonly = True if self.instance else False
         message_readonly = True if self.instance else False
 
         fields = OrderedDict([
@@ -22,8 +21,7 @@ class MessageSerializer(serializers.ModelSerializer):
             ('conversation', serializers.PrimaryKeyRelatedField(
                 queryset=None if conversation_readonly else Conversation.objects.all(), read_only=conversation_readonly)
              ),
-            ('sender', serializers.PrimaryKeyRelatedField(
-                queryset=None if sender_readonly else User.objects.all(), read_only=sender_readonly)
+            ('sender', serializers.PrimaryKeyRelatedField(read_only=True)
              ),
             ('created_at', serializers.DateTimeField(read_only=True)),
             ('updated_at', serializers.DateTimeField(read_only=True)),
@@ -38,13 +36,21 @@ class MessageSerializer(serializers.ModelSerializer):
         else:
             return self.validate_for_create(attrs)
 
-    @staticmethod
-    def validate_for_create(attrs: dict) -> dict:
+    def validate_for_create(self, attrs: dict) -> dict:
         errors = {}
         conversation: Conversation = attrs['conversation']
-        sender: User = attrs['sender']
+        sender = self._get_sender_from_context()
         if not Participant.is_user_participant_of(sender, conversation):
             errors.setdefault('sender', []).append('Sender is not participant of conversation.')
+        else:
+            attrs['sender'] = sender
         if errors:
             raise serializers.ValidationError(errors)
         return attrs
+
+    def _get_sender_from_context(self) -> User:
+        sender = self.context.get('sender', None)
+        if sender:
+            return sender
+        else:
+            raise serializers.ValidationError('Sender missing.')
