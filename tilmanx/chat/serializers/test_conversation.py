@@ -4,13 +4,18 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 
 from chat.enum import ConversationType
-from chat.models import Conversation
+from chat.models import Conversation, Participant
 from chat.serializers import ConversationSerializer
 
 
 class TestConversationSerializer(TestCase):
     def setUp(self):
-        self.user = User.objects.create(username='username')
+        self.first_user = User.objects.create(
+            username='first_user', first_name='first_name1', last_name='last_name1'
+        )
+        self.second_user = User.objects.create(
+            username='second_user', first_name='first_name2', last_name='last_name2'
+        )
         self.required_data = {
             'type': ConversationType.PRIVATE.value
         }
@@ -19,11 +24,11 @@ class TestConversationSerializer(TestCase):
         # Arrange
         data = self.required_data.copy()
         context = {
-            'creator': self.user
+            'creator': self.first_user
         }
         # Act && Assert
         self._check_create(
-            data, context, expected=True, expected_creator=self.user, expected_type=ConversationType.PRIVATE.value
+            data, context, expected=True, expected_creator=self.first_user, expected_type=ConversationType.PRIVATE.value
         )
         self._check_create(data, {}, expected=False)
         self._check_create({}, context, expected=False)
@@ -47,10 +52,16 @@ class TestConversationSerializer(TestCase):
                 if expected_type is not None:
                     self.assertEqual(conversation.type, expected_type)
 
-    def test_data(self):
+    def test_get_addressee(self):
         # Arrange
-        conversation = Conversation.objects.create(type=ConversationType.PRIVATE.value, creator=self.user)
-        serializer = ConversationSerializer(conversation)
-        # Act && Assert
-        self.assertEqual(conversation.type, ConversationType.PRIVATE.value)
-        self.assertEqual(conversation.creator, self.user)
+        conversation = Conversation.objects.create(type=ConversationType.PRIVATE.value, creator=self.first_user)
+        Participant.objects.create(conversation=conversation, user=self.first_user)
+        Participant.objects.create(conversation=conversation, user=self.second_user)
+        context = {
+            "user": self.first_user
+        }
+        # Act
+        serializer = ConversationSerializer(conversation, context=context)
+        actual = serializer.data
+        # Assert
+        self.assertEqual(actual["addressee"], f"{self.second_user.first_name} {self.second_user.last_name}")

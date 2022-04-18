@@ -25,6 +25,7 @@ class ConversationSerializer(serializers.ModelSerializer):
             ('latest_message', serializers.CharField(
                 source="latest_message.message", read_only=True, allow_null=True)
              ),
+            ('addressee', serializers.SerializerMethodField(read_only=True)),
         ])
 
         return fields
@@ -66,3 +67,21 @@ class ConversationSerializer(serializers.ModelSerializer):
         serializer = ConversationSerializer(data=required_data, context=context)
         serializer.is_valid(raise_exception=True)
         return serializer.save()
+
+    def get_addressee(self, conversation: 'Conversation') -> str:
+        user = self._get_user_from_context()
+        if conversation.type == ConversationType.PRIVATE.value:
+            addressee = conversation.participant_set.exclude(user=user).get()
+            user = addressee.user
+            return f"{user.first_name} {user.last_name}"
+        else:
+            raise serializers.ValidationError(
+                f'Conversation with {ConversationType.GROUP.value} currently not supported.'
+            )
+
+    def _get_user_from_context(self) -> User:
+        user = self.context.get('user', None)
+        if user:
+            return user
+        else:
+            raise serializers.ValidationError('User missing.')
