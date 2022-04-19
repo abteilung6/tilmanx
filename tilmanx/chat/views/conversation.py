@@ -19,11 +19,12 @@ class ConversationViewSet(mixins.ListModelMixin, GenericViewSet):
         """Flattens user from request"""
         context = {
             'request': self.request,
-            'user': self.request.user,
             'format': self.format_kwarg,
             'view': self
         }
-        return context
+        user = self.request.user
+        serializer_context = ConversationSerializer.get_context_with(creator=user, requester=user)
+        return {**context, **serializer_context}
 
     def get_queryset(self):
         queryset = Conversation.objects.filter(participant__user=self.request.user)

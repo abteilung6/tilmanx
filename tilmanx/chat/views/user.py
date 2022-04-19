@@ -43,7 +43,8 @@ class UserViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewS
         addressee: User = self.get_object()
         conversation = Conversation.get_private_conversation_for_users(requester, addressee)
         if conversation:
-            conversation_serializer = ConversationSerializer(conversation)
+            context = ConversationSerializer.get_context_with(requester=requester)
+            conversation_serializer = ConversationSerializer(conversation, context=context)
             return Response(conversation_serializer.data, status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
@@ -54,12 +55,13 @@ class UserViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewS
         requester: User = self.request.user
         addressee: User = self.get_object()
         conversation = Conversation.get_private_conversation_for_users(requester, addressee)
+        context = ConversationSerializer.get_context_with(creator=requester, requester=requester)
         if conversation:
-            conversation_serializer = ConversationSerializer(conversation)
+            conversation_serializer = ConversationSerializer(conversation, context=context)
             return Response(conversation_serializer.data, status=status.HTTP_304_NOT_MODIFIED)
         else:
             conversation = ConversationSerializer.create_private_conversation_with(requester)
             ParticipantSerializer.create_participant_for_conversation(requester, conversation)
             ParticipantSerializer.create_participant_for_conversation(addressee, conversation)
-            conversation_serializer = ConversationSerializer(conversation)
+            conversation_serializer = ConversationSerializer(conversation, context=context)
             return Response(conversation_serializer.data, status=status.HTTP_201_CREATED)

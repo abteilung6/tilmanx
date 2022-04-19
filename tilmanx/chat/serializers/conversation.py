@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from typing import Dict
+from typing import Dict, Optional
 
 from django.contrib.auth.models import User
 from rest_framework import serializers
@@ -57,13 +57,20 @@ class ConversationSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError("Currently conversations with type {value} are not allowed.")
 
     @classmethod
+    def get_context_with(cls, creator: Optional[User] = None, requester: Optional[User] = None) -> dict:
+        result = {}
+        if creator:
+            result.update({'creator': creator})
+        if requester:
+            result.update({'user': requester})
+        return result
+
+    @classmethod
     def create_private_conversation_with(cls, creator: User) -> Conversation:
         required_data = {
             'type': ConversationType.PRIVATE.value
         }
-        context = {
-            'creator': creator
-        }
+        context = cls.get_context_with(creator=creator, requester=creator)
         serializer = ConversationSerializer(data=required_data, context=context)
         serializer.is_valid(raise_exception=True)
         return serializer.save()
