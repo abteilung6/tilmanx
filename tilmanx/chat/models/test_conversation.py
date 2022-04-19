@@ -57,3 +57,19 @@ class TestConversation(TestCase):
         actual: Message = conversation.latest_message
         # Assert
         self.assertEqual(actual, latest_message)
+
+    def test_latest_message_at(self):
+        # Arrange
+        conversation = Conversation.objects.create(
+            type=ConversationType.PRIVATE.value, creator=self.first_user
+        )
+        Participant.objects.create(conversation=conversation, user=self.first_user)
+        Participant.objects.create(conversation=conversation, user=self.second_user)
+        mock_date = datetime(2020, 12, 24, 0, 0, 0, 0, timezone.utc)
+        with mock.patch('django.utils.timezone.now') as mock_now:
+            mock_now.return_value = mock_date
+            Message.objects.create(conversation=conversation, sender=self.first_user, message="foo1")
+        # Act
+        actual = conversation.latest_message_at
+        # Assert
+        self.assertEqual(actual, mock_date)
