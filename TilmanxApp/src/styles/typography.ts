@@ -8,7 +8,8 @@ export type TypographyVariant =
   | 'h3'
   | 'body1'
   | 'body2'
-  | 'subtitle2';
+  | 'subtitle2'
+  | 'description1';
 
 export const typography: Record<TypographyVariant, TextStyle> = {
   h1: {
@@ -56,6 +57,14 @@ export const typography: Record<TypographyVariant, TextStyle> = {
     fontWeight: '400',
     fontSize: 14,
     lineHeight: 24,
+    letterSpacing: -0.5,
+    color: SolidColor.gray,
+  },
+  description1: {
+    fontStyle: 'normal',
+    fontWeight: '400',
+    fontSize: 12,
+    lineHeight: 16,
     letterSpacing: -0.5,
     color: SolidColor.gray,
   },
