@@ -2,14 +2,14 @@ import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {StackScreenProps} from '@react-navigation/stack';
 
-import {BottomTabParamList} from '../../navigation/types';
+import {RootStackParamList} from '../../navigation/types';
 import {useConversationsQuery} from '../../hooks/useConversationQuery';
 import {AppBar} from '../../components/AppBar/AppBar';
 import {ConversationList} from '../../components/ConversationList/ConversationList';
 
 export const ConversationsScreen: React.FC<
-  StackScreenProps<BottomTabParamList, 'Conversations'>
-> = () => {
+  StackScreenProps<RootStackParamList, 'Conversations'>
+> = ({navigation}) => {
   const conversationQuery = useConversationsQuery();
   const conversations = conversationQuery.data || [];
 
@@ -27,7 +27,11 @@ export const ConversationsScreen: React.FC<
       <View style={styles.conversations}>
         <ConversationList
           conversations={conversations}
-          onPress={conversation => console.log(conversation)}
+          onPress={conversation =>
+            navigation.navigate('Conversation', {
+              conversationId: conversation.id,
+            })
+          }
           refreshing={conversationQuery.isFetching}
           onRefresh={() => conversationQuery.refetch()}
         />
