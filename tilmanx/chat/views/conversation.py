@@ -5,7 +5,7 @@ from chat.models import Conversation
 from chat.serializers import ConversationSerializer
 
 
-class ConversationViewSet(mixins.ListModelMixin, GenericViewSet):
+class ConversationViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewSet):
     queryset = Conversation.objects.prefetch_related('participant_set__user').all()
     serializer_class = ConversationSerializer
     permission_classes = (permissions.IsAuthenticated,)
