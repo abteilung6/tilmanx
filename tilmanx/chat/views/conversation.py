@@ -6,7 +6,6 @@ from chat.serializers import ConversationSerializer
 
 
 class ConversationViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewSet):
-    queryset = Conversation.objects.prefetch_related('participant_set__user').all()
     serializer_class = ConversationSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
@@ -27,5 +26,7 @@ class ConversationViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, Gene
         return {**context, **serializer_context}
 
     def get_queryset(self):
-        queryset = Conversation.objects.filter(participant__user=self.request.user)
-        return queryset
+        return Conversation.objects.prefetch_related(
+            'participant_set__user'
+        ).filter(participant__user=self.request.user)
+

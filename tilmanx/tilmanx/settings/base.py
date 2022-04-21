@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     # third party app
     'rest_framework',
     'rest_framework_simplejwt',
+    'django_filters',
     'drf_spectacular',
     # project apps
     'authentication',

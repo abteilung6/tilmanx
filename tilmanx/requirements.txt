@@ -11,6 +11,7 @@ importlib-metadata==4.11.3
 inflection==0.5.1
 jsonschema==4.4.0
 Markdown==3.3.6
+names==0.3.0
 psycopg2-binary==2.9.3
 PyJWT==2.3.0
 pyrsistent==0.18.1

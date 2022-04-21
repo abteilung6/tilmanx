@@ -16,7 +16,6 @@ from chat.serializers import FriendshipSerializer
 class FriendshipViewSet(
     mixins.CreateModelMixin, mixins.RetrieveModelMixin, mixins.DestroyModelMixin, mixins.ListModelMixin, GenericViewSet
 ):
-    queryset = Friendship.objects.all()
     serializer_class = FriendshipSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
@@ -37,27 +36,12 @@ class FriendshipViewSet(
             context['action'] = FriendshipAction.ACCEPT
         return context
 
-    def list(self, request, *args, **kwargs):
-        queryset: QuerySet = self.filter_queryset(self.get_queryset())
-        friendships = queryset.filter(Q(requester=self.request.user) | Q(addressee=self.request.user))
-        serializer = self.get_serializer(friendships, many=True)
-        return Response(serializer.data)
-
-    def retrieve(self, request, *args, **kwargs):
-        pk = kwargs.get('pk', None)
-        queryset: QuerySet = self.filter_queryset(self.get_queryset())
-        friendship = get_object_or_404(
-            queryset,
-            Q(pk=pk) & (Q(requester=self.request.user) | Q(addressee=self.request.user))
+    def get_queryset(self):
+        return Friendship.objects.select_related(
+            'requester', 'addressee'
+        ).filter(
+            Q(requester=self.request.user) | Q(addressee=self.request.user)
         )
-        serializer = self.get_serializer(friendship)
-        return Response(serializer.data)
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     @action(detail=True, methods=['PUT'])
     def accept(self, request, pk=None):
