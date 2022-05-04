@@ -24,6 +24,22 @@ export const useConversationsQuery = (
   );
 };
 
+export const useConversationQuery = (
+  id: number,
+  options?: UseQueryOptions<Conversation>,
+) => {
+  return useQuery<Conversation>(
+    ['conversations', id],
+    async () => {
+      const {data} = await new ConversationApi().retrieve(id);
+      return new Conversation(data);
+    },
+    {
+      ...options,
+    },
+  );
+};
+
 export const useCreateConversationMutation = (
   options?: Omit<UseMutationOptions<Conversation, Error, number>, 'mutationFn'>,
 ) =>
