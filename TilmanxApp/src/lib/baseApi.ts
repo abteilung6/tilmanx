@@ -39,7 +39,7 @@ export class GenericModelApi<T> extends BaseApi {
     });
   }
 
-  public post<D>(data: D) {
+  public post<D extends object>(data: D) {
     return axiosInstance.post<T>(this.route, data);
   }
 

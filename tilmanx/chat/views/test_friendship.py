@@ -67,7 +67,7 @@ class TestFriendshipViewSet(TestCase):
         force_authenticate(request, user=self.addressee)
         # Act
         response: Response = self.view_accept(request, pk=friendship.id)
-        # Arrange
+        # Assert
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['requester_id'], self.requester.id)
         self.assertEqual(response.data['addressee_id'], self.addressee.id)

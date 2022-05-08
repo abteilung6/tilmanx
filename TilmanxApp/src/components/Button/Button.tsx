@@ -11,7 +11,7 @@ import {
 
 import {defaultTheme} from '../../styles/theme';
 
-export type ButtonVariant = 'primary' | 'secondary';
+export type ButtonVariant = 'primary' | 'secondary' | 'white';
 
 export type ButtonProps = PressableProps & {
   /**
@@ -65,6 +65,11 @@ const variantToPressableStyle: Record<ButtonVariant, StyleProp<ViewStyle>> = {
     borderWidth: 1,
     borderColor: defaultTheme.solidColors.blue,
   },
+  white: {
+    backgroundColor: defaultTheme.solidColors.white,
+    borderWidth: 1,
+    borderColor: defaultTheme.solidColors.lightGray,
+  },
 };
 
 const variantToTextStyle: Record<ButtonVariant, StyleProp<TextStyle>> = {
@@ -73,6 +78,9 @@ const variantToTextStyle: Record<ButtonVariant, StyleProp<TextStyle>> = {
   },
   secondary: {
     color: defaultTheme.solidColors.blue,
+  },
+  white: {
+    color: defaultTheme.solidColors.black,
   },
 };
 

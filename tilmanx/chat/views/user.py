@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db.models import Q
+from drf_spectacular.utils import extend_schema
 
 from rest_framework import permissions, mixins
 from rest_framework import filters
@@ -9,8 +10,8 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from chat.models import Friendship
-from chat.serializers import UserSerializer, FriendshipSerializer
+from chat.models import Friendship, Conversation
+from chat.serializers import UserSerializer, FriendshipSerializer, ConversationSerializer, ParticipantSerializer
 
 
 class UserViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewSet):
@@ -34,3 +35,33 @@ class UserViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewS
         )
         serializer = FriendshipSerializer(friendship)
         return Response(serializer.data)
+
+    @extend_schema(responses=ConversationSerializer)
+    @action(detail=True, methods=['GET'])
+    def conversation(self, request, pk=None):
+        requester: User = self.request.user
+        addressee: User = self.get_object()
+        conversation = Conversation.get_private_conversation_for_users(requester, addressee)
+        if conversation:
+            context = ConversationSerializer.get_context_with(requester=requester)
+            conversation_serializer = ConversationSerializer(conversation, context=context)
+            return Response(conversation_serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+    @extend_schema(responses=ConversationSerializer)
+    @action(detail=True, methods=['POST'])
+    def create_conversation(self, request, pk=None):
+        requester: User = self.request.user
+        addressee: User = self.get_object()
+        conversation = Conversation.get_private_conversation_for_users(requester, addressee)
+        context = ConversationSerializer.get_context_with(creator=requester, requester=requester)
+        if conversation:
+            conversation_serializer = ConversationSerializer(conversation, context=context)
+            return Response(conversation_serializer.data, status=status.HTTP_304_NOT_MODIFIED)
+        else:
+            conversation = ConversationSerializer.create_private_conversation_with(requester)
+            ParticipantSerializer.create_participant_for_conversation(requester, conversation)
+            ParticipantSerializer.create_participant_for_conversation(addressee, conversation)
+            conversation_serializer = ConversationSerializer(conversation, context=context)
+            return Response(conversation_serializer.data, status=status.HTTP_201_CREATED)

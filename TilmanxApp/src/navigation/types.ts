@@ -8,6 +8,8 @@ export type RootStackParamList = {
   SearchContacts: undefined;
   ContactRequests: undefined;
   Profile: {userId: number};
+  Conversations: undefined;
+  Conversation: {conversationId: number};
 };
 
 export type BottomTabParamList = {

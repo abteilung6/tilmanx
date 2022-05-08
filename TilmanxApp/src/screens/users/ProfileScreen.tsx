@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {StackScreenProps} from '@react-navigation/stack';
 
 import {RootStackParamList} from '../../navigation/types';
@@ -14,6 +14,7 @@ import {
   useDeclineFriendshipMutation,
   useFriendshipsQuery,
 } from '../../hooks/useFriendshipQuery';
+import {useCreateConversationMutation} from '../../hooks/useConversationQuery';
 import {FriendshipStatus} from '../../models/friendship';
 import {AppBar} from '../../components/AppBar/AppBar';
 import {Profile} from '../../components/Profile/Profile';
@@ -21,7 +22,7 @@ import {Button} from '../../components/Button/Button';
 
 export const ProfileScreen: React.FC<
   StackScreenProps<RootStackParamList, 'Profile'>
-> = ({route}) => {
+> = ({navigation, route}) => {
   const userQuery = useUserQuery(route.params.userId);
   const user = userQuery.data;
   const userFriendshipQuery = useUserFriendshipQuery(route.params.userId);
@@ -47,6 +48,10 @@ export const ProfileScreen: React.FC<
       friendshipsQuery.refetch();
     },
   });
+  const createConversationMutation = useCreateConversationMutation({
+    onSuccess: conversation =>
+      navigation.push('Conversation', {conversationId: conversation.id}),
+  });
 
   const render = (): React.ReactElement => {
     return (
@@ -71,7 +76,14 @@ export const ProfileScreen: React.FC<
       return (
         <View style={styles.actionBar}>
           <View style={styles.action}>
-            <Text>Other actions..</Text>
+            <Button
+              variant="white"
+              height={35}
+              onPress={() =>
+                user && createConversationMutation.mutate(user.id)
+              }>
+              Message
+            </Button>
           </View>
           <View style={styles.action}>{renderFriendshipButton()}</View>
         </View>
