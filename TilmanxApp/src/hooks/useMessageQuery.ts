@@ -1,7 +1,12 @@
-import {useQuery, UseQueryOptions} from 'react-query';
+import {
+  useMutation,
+  UseMutationOptions,
+  useQuery,
+  UseQueryOptions,
+} from 'react-query';
 
-import {MessageApi} from '../api/messageApi';
-import {UserApi} from '../api/userApi';
+import {CreateMessageRequest, MessageApi} from '../api/messageApi';
+import {QueryManager} from '../lib/queryManager';
 import {Message} from '../models/message';
 
 export const useMessagesByConversationQuery = (
@@ -9,17 +14,25 @@ export const useMessagesByConversationQuery = (
   options?: UseQueryOptions<ReadonlyArray<Message>>,
 ) => {
   return useQuery<ReadonlyArray<Message>>(
-    ['messages', 'by_conversation', id],
+    QueryManager.getConversationMessagesKey(id),
     async () => {
-      const [{data: userData}, {data: messagesData}] = await Promise.all([
-        new UserApi().me(),
-        new MessageApi().byConversation(id),
-      ]);
+      const {data} = await new MessageApi().byConversation(id);
 
-      return messagesData.map(message => new Message(message, userData.id));
+      return data.map(message => new Message(message));
     },
     {
       ...options,
     },
   );
 };
+
+export const useCreateMessageMutation = (
+  options?: Omit<
+    UseMutationOptions<Message, Error, CreateMessageRequest>,
+    'mutationFn'
+  >,
+) =>
+  useMutation<Message, Error, CreateMessageRequest>(async variables => {
+    const {data} = await new MessageApi().post<CreateMessageRequest>(variables);
+    return new Message(data);
+  }, options);

@@ -5,6 +5,11 @@ export interface MessageFilterParams {
   conversation_id?: number;
 }
 
+export interface CreateMessageRequest {
+  conversation: number;
+  message: string;
+}
+
 export class MessageApi extends GenericModelApi<MessageProperties> {
   constructor() {
     super('messages');
@@ -14,5 +19,9 @@ export class MessageApi extends GenericModelApi<MessageProperties> {
     return this.list<MessageFilterParams>({
       conversation_id: conversation_id,
     });
+  }
+
+  public createMessage(data: CreateMessageRequest) {
+    return this.post<CreateMessageRequest>(data);
   }
 }

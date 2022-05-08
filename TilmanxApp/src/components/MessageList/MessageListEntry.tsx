@@ -6,13 +6,15 @@ import {defaultTheme} from '../../styles/theme';
 
 export interface MessageListEntryProps {
   message: Message;
+  userId: number;
 }
 
 export const MessageListEntry: React.FC<MessageListEntryProps> = ({
   message,
+  userId,
 }) => {
   const render = (): React.ReactElement => {
-    if (message.isSender) {
+    if (Message.isSender(message, userId)) {
       return renderSenderMessage();
     } else {
       return renderRecipientMessage();

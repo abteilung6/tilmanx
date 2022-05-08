@@ -34,10 +34,7 @@ export const useCreateFriendshipMutation = (
 ) =>
   useMutation<Friendship, Error, UpstreamCreateFriendshipProperties>(
     async variables => {
-      const {data} =
-        await new FriendshipApi().post<UpstreamCreateFriendshipProperties>(
-          variables,
-        );
+      const {data} = await new FriendshipApi().post(variables);
       return new Friendship(data);
     },
     options,

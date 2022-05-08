@@ -9,10 +9,16 @@ export type MessageListProps = Omit<
   'data' | 'renderItem'
 > & {
   messages: ReadonlyArray<Message>;
+  /**
+   * Set the current user.
+   * In order to decide wether it's a sender or recipient message.
+   */
+  userId: number;
 };
 
 export const MessageList: React.FC<MessageListProps> = ({
   messages,
+  userId,
   style,
   ...props
 }) => {
@@ -30,7 +36,7 @@ export const MessageList: React.FC<MessageListProps> = ({
         data={_messages}
         style={[style]}
         renderItem={({item, index}) => (
-          <MessageListEntry key={index} message={item} />
+          <MessageListEntry key={index} message={item} userId={userId} />
         )}
         {...props}
       />
