@@ -2,6 +2,7 @@ import React from 'react';
 import {QueryClient, QueryClientProvider} from 'react-query';
 
 import {AuthenticationProvider} from './hooks/authentication/AuthenticationProvider';
+import {SocketProvider} from './hooks/socket/SocketProvider';
 import {Navigation} from './navigation';
 
 const App: React.FC = () => {
@@ -10,7 +11,9 @@ const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthenticationProvider>
-        <Navigation />
+        <SocketProvider>
+          <Navigation />
+        </SocketProvider>
       </AuthenticationProvider>
     </QueryClientProvider>
   );

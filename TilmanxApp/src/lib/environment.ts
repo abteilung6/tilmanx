@@ -7,9 +7,11 @@ class EnvironmentConfigManager {
   private stringSchema = string().required();
 
   public readonly api_url: string;
+  public readonly socket_url: string;
 
   constructor() {
     this.api_url = this.stringSchema.validateSync(Config.API_URL);
+    this.socket_url = this.stringSchema.validateSync(Config.SOCKET_URL);
   }
 
   public static getInstance(): EnvironmentConfigManager {
