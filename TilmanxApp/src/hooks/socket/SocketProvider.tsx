@@ -1,8 +1,12 @@
 import React, {createContext, useCallback, useEffect, useState} from 'react';
 import {AppState} from 'react-native';
+import {useQueryClient} from 'react-query';
 
 import {EnvironmentConfig} from '../../lib/environment';
+import {QueryManager} from '../../lib/queryManager';
+import {Message, MessageProperties} from '../../models/message';
 import {useAuthentication} from '../authentication/useAuthentication';
+import {ReceivedMessageType} from './types';
 
 export interface SocketContextProps {
   connected: boolean;
@@ -19,6 +23,7 @@ export interface SocketProviderProps {
 export const SocketProvider: React.FC<SocketProviderProps> = ({children}) => {
   const {accessToken} = useAuthentication();
   const [websocket, setWebsocket] = useState<WebSocket | undefined>(undefined);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (accessToken && !isConnected()) {
@@ -35,7 +40,9 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({children}) => {
       websocket.onerror = error => {
         console.warn('[SocketProvider] ', error);
       };
+      websocket.onmessage = onMessage;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [websocket]);
 
   const connect = useCallback(() => {
@@ -61,6 +68,24 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({children}) => {
       return false;
     }
   }, [websocket]);
+
+  const onMessage = (event: WebSocketMessageEvent) => {
+    console.debug('[SocketProvider] received message: ', event.data);
+    const obj = JSON.parse(event.data);
+
+    if (obj.type === ReceivedMessageType.CHAT_MESSAGE) {
+      const properties = obj.message as MessageProperties;
+      const message = new Message(properties);
+      QueryManager.mergeConversationMessages(
+        queryClient,
+        message.conversation,
+        [message],
+      );
+      QueryManager.invalidateConversations(queryClient);
+    } else {
+      console.warn('[SocketProvider] unknown message:', obj);
+    }
+  };
 
   useEffect(() => {
     const subscription = AppState.addEventListener('change', nextAppState => {
