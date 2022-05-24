@@ -28,3 +28,8 @@ class ConversationType(ModelEnum):
     """A private conversation consists of two participants"""
     GROUP = 'GROUP'
     """A group conversation consists of finite participants"""
+
+
+@unique
+class MessageType(Enum):
+    CHAT_MESSAGE = "chat_message"

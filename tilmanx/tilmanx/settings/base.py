@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'django_filters',
     'drf_spectacular',
+    'channels',
     # project apps
     'authentication',
     'chat'
@@ -77,6 +78,13 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'tilmanx.wsgi.application'
+ASGI_APPLICATION = 'tilmanx.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
