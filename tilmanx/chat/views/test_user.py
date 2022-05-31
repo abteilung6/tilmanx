@@ -98,7 +98,7 @@ class TestUserViewSet(TestCase):
         # Act
         response: Response = self.view_create_conversation(request, pk=addressee.id)
         # Assert
-        self.assertEqual(response.status_code, status.HTTP_304_NOT_MODIFIED)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data['id'], conversation.id)
         self.assertEqual(response.data['creator'], requester.id)
 
