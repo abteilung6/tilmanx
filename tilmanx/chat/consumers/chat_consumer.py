@@ -17,3 +17,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def chat_message(self, message: dict):
         await self.send(text_data=json.dumps(message))
+
+    async def friendship_message(self, message: dict):
+        await self.send(text_data=json.dumps(message))

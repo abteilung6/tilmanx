@@ -33,3 +33,4 @@ class ConversationType(ModelEnum):
 @unique
 class MessageType(Enum):
     CHAT_MESSAGE = "chat_message"
+    FRIENDSHIP_MESSAGE = "friendship_message"
