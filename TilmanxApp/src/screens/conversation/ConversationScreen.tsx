@@ -1,10 +1,8 @@
 import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {StackScreenProps} from '@react-navigation/stack';
-import {useQueryClient} from 'react-query';
 
 import {RootStackParamList} from '../../navigation/types';
-import {QueryManager} from '../../lib/queryManager';
 import {
   useCreateMessageMutation,
   useMessagesByConversationQuery,
@@ -19,7 +17,6 @@ export const ConversationScreen: React.FC<
   StackScreenProps<RootStackParamList, 'Conversation'>
 > = ({route}) => {
   const conversationId = route.params.conversationId;
-  const queryClient = useQueryClient();
   const userMeQuery = useUserMeQuery();
   const userId = userMeQuery.data?.id || NaN;
   const conversationQuery = useConversationQuery(conversationId);
@@ -28,12 +25,8 @@ export const ConversationScreen: React.FC<
   );
   const messages = messagesQuery.data || [];
   const createMessageMutation = useCreateMessageMutation({
-    onSuccess: message => {
+    onSuccess: _message => {
       setInputValue('');
-      QueryManager.mergeConversationMessages(queryClient, conversationId, [
-        message,
-      ]);
-      QueryManager.invalidateConversations(queryClient);
     },
   });
   const [inputValue, setInputValue] = useState('');

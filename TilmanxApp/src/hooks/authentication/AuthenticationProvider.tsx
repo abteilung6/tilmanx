@@ -13,15 +13,17 @@ export interface AuthenticationContextProps {
    */
   isLoggedIn: boolean | undefined;
   loading: boolean | undefined;
+  accessToken: string | undefined;
   login: (loginRequest: LoginRequest) => void;
   logout: () => void;
 }
 
 export const AuthenticationContext = createContext<AuthenticationContextProps>({
   isLoggedIn: undefined,
+  loading: undefined,
+  accessToken: undefined,
   login: () => undefined,
   logout: () => undefined,
-  loading: undefined,
 });
 
 export interface AuthenticationProviderProps {
@@ -36,18 +38,21 @@ export const AuthenticationProvider: React.FC<AuthenticationProviderProps> = ({
   children,
 }) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | undefined>();
+  const [accessToken, setAccessToken] = useState<string | undefined>(undefined);
   const [refreshTimer, setRefreshTimer] = useState<NodeJS.Timer | undefined>();
   const loginMutation = useLoginMutation({
     onSuccess: data => {
       AsyncStorage.setItem(accessTokenKey, data.access);
       AsyncStorage.setItem(refreshTokenKey, data.refresh);
       setIsLoggedIn(true);
+      setAccessToken(data.access);
       initializeIntervallForRefresh();
     },
   });
   const refreshTokenMutation = useRefreshTokenMutation({
     onSuccess: data => {
       AsyncStorage.setItem(accessTokenKey, data.access);
+      setAccessToken(data.access);
       setIsLoggedIn(true);
     },
     onError: _error => logout(),
@@ -66,6 +71,7 @@ export const AuthenticationProvider: React.FC<AuthenticationProviderProps> = ({
     }
     AsyncStorage.removeItem(refreshTokenKey);
     AsyncStorage.removeItem(accessTokenKey);
+    setAccessToken(undefined);
     setIsLoggedIn(false);
   }, [refreshTimer]);
 
@@ -120,9 +126,10 @@ export const AuthenticationProvider: React.FC<AuthenticationProviderProps> = ({
     <AuthenticationContext.Provider
       value={{
         isLoggedIn: isLoggedIn,
+        loading: loginMutation.isLoading,
+        accessToken: accessToken,
         login: login,
         logout: logout,
-        loading: loginMutation.isLoading,
       }}>
       {children}
     </AuthenticationContext.Provider>

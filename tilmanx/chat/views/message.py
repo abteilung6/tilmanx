@@ -1,9 +1,13 @@
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from django_filters import rest_framework as filters
 
 
-from rest_framework import mixins, permissions
+from rest_framework import mixins, permissions, status
+from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
+from chat.enum import MessageType
 from chat.models import Message
 from chat.serializers import MessageSerializer
 
@@ -42,3 +46,22 @@ class MessageViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, GenericView
         ).filter(
             conversation__participant__user=self.request.user
         )
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        instance: Message = serializer.save()
+        self.publish_create(instance, serializer.data)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
+    @staticmethod
+    def publish_create(message: Message, data: dict):
+        channel_layer = get_channel_layer()
+        participants = list(message.conversation.participant_set.all())
+        message = {
+            'type': MessageType.CHAT_MESSAGE.value,
+            'message': data
+        }
+        for participant in participants:
+            async_to_sync(channel_layer.group_send)(participant.user.username, message)

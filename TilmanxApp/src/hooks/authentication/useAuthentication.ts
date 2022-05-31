@@ -5,15 +5,16 @@ import {AuthenticationContext} from './AuthenticationProvider';
 
 export interface useAuthenticationResult {
   isLoggedIn: boolean | undefined;
+  loading: boolean | undefined;
+  accessToken: string | undefined;
   login: (loginRequest: LoginRequest) => void;
   logout: () => void;
-  loading: boolean | undefined;
 }
 
 export const useAuthentication = (): useAuthenticationResult => {
-  const {isLoggedIn, login, logout, loading} = useContext(
+  const {isLoggedIn, loading, accessToken, login, logout} = useContext(
     AuthenticationContext,
   );
 
-  return {isLoggedIn, login, logout, loading};
+  return {isLoggedIn, loading, accessToken, login, logout};
 };

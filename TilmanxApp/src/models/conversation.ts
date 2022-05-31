@@ -51,4 +51,24 @@ export class Conversation {
   public static compare(left: Conversation, right: Conversation): number {
     return compareDate(right.latest_message_at, left.latest_message_at);
   }
+
+  public toProps(): ConversationProperties {
+    return {
+      id: this.id,
+      type: this.type,
+      creator: this.creator,
+      latest_message: this.latest_message,
+      addressee: this.addressee,
+      created_at: this.created_at.toString(),
+      updated_at: this.updated_at.toString(),
+      latest_message_at: this.latest_message_at?.toString() || null,
+    };
+  }
+
+  public withPartialProps(
+    props: Partial<ConversationProperties>,
+  ): Conversation {
+    const updated = {...this.toProps(), ...props};
+    return new Conversation(updated);
+  }
 }

@@ -58,7 +58,7 @@ class UserViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, GenericViewS
         context = ConversationSerializer.get_context_with(creator=requester, requester=requester)
         if conversation:
             conversation_serializer = ConversationSerializer(conversation, context=context)
-            return Response(conversation_serializer.data, status=status.HTTP_304_NOT_MODIFIED)
+            return Response(conversation_serializer.data, status=status.HTTP_201_CREATED)
         else:
             conversation = ConversationSerializer.create_private_conversation_with(requester)
             ParticipantSerializer.create_participant_for_conversation(requester, conversation)
