@@ -5,7 +5,7 @@ import {
   UseMutationOptions,
 } from 'react-query';
 
-import {StringOnlyQueryKey} from '../lib/queryManager';
+import {QueryManager} from '../lib/queryManager';
 import {ConversationApi} from '../api/conversationApi';
 import {UserApi} from '../api/userApi';
 import {Conversation} from '../models/conversation';
@@ -14,7 +14,7 @@ export const useConversationsQuery = (
   options?: UseQueryOptions<ReadonlyArray<Conversation>>,
 ) => {
   return useQuery<ReadonlyArray<Conversation>>(
-    StringOnlyQueryKey.Conversations,
+    QueryManager.getConversationsKey(),
     async () => {
       const {data} = await new ConversationApi().list();
       return data.map(conversation => new Conversation(conversation));

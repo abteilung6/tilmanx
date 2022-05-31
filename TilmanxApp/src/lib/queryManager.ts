@@ -1,6 +1,7 @@
 import {QueryClient} from 'react-query';
-import {Friendship} from '../models/friendship';
 
+import {Conversation} from '../models/conversation';
+import {Friendship} from '../models/friendship';
 import {Message} from '../models/message';
 
 export enum StringOnlyQueryKey {
@@ -18,6 +19,10 @@ export class QueryManager {
 
   public static getMessagesByConversationKey(conversationId: number) {
     return [StringOnlyQueryKey.Messages, conversationId];
+  }
+
+  public static getConversationsKey() {
+    return StringOnlyQueryKey.Conversations;
   }
 
   // Methods for updating QueryData
@@ -65,9 +70,30 @@ export class QueryManager {
     return [...excluded, ...overrides];
   }
 
-  // Methods for invalidating QueryDaTa
+  public static updateConversationsWithMessage(
+    queryClient: QueryClient,
+    message: Message,
+  ) {
+    queryClient.setQueryData<ReadonlyArray<Conversation> | undefined>(
+      this.getConversationsKey(),
+      existing => this._updateConversationsWithMessage(existing || [], message),
+    );
+  }
 
-  public static invalidateConversations(queryClient: QueryClient) {
-    queryClient.invalidateQueries(StringOnlyQueryKey.Conversations);
+  private static _updateConversationsWithMessage(
+    conversations: ReadonlyArray<Conversation>,
+    message: Message,
+  ): ReadonlyArray<Conversation> {
+    const conversationId = message.conversation;
+    const result = conversations.filter(_ => _.id !== conversationId);
+    const conversation = conversations.find(_ => _.id === conversationId);
+    if (conversation) {
+      const updated = conversation.withPartialProps({
+        latest_message: message.message,
+        latest_message_at: message.created_at.toString(),
+      });
+      result.push(updated);
+    }
+    return result;
   }
 }

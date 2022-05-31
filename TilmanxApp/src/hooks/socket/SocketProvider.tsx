@@ -72,7 +72,6 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({children}) => {
   const onMessage = (event: WebSocketMessageEvent) => {
     console.debug('[SocketProvider] received message: ', event.data);
     const obj = JSON.parse(event.data);
-
     if (obj.type === ReceivedMessageType.CHAT_MESSAGE) {
       const properties = obj.message as MessageProperties;
       const message = new Message(properties);
@@ -81,8 +80,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({children}) => {
         message.conversation,
         [message],
       );
-      // TODO: don't invalidate conversations after every message
-      QueryManager.invalidateConversations(queryClient);
+      QueryManager.updateConversationsWithMessage(queryClient, message);
     } else if (obj.type === ReceivedMessageType.FRIENDSHIP_MESSAGE) {
       const properties = obj.message as FriendshipProperties;
       const friendship = new Friendship(properties);
