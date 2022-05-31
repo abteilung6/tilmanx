@@ -14,10 +14,9 @@ export const useMessagesByConversationQuery = (
   options?: UseQueryOptions<ReadonlyArray<Message>>,
 ) => {
   return useQuery<ReadonlyArray<Message>>(
-    QueryManager.getConversationMessagesKey(id),
+    QueryManager.getMessagesByConversationKey(id),
     async () => {
       const {data} = await new MessageApi().byConversation(id);
-
       return data.map(message => new Message(message));
     },
     {

@@ -4,6 +4,7 @@ import {useQueryClient} from 'react-query';
 
 import {EnvironmentConfig} from '../../lib/environment';
 import {QueryManager} from '../../lib/queryManager';
+import {Friendship, FriendshipProperties} from '../../models/friendship';
 import {Message, MessageProperties} from '../../models/message';
 import {useAuthentication} from '../authentication/useAuthentication';
 import {ReceivedMessageType} from './types';
@@ -48,7 +49,6 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({children}) => {
   const connect = useCallback(() => {
     if (accessToken) {
       const uri = `${EnvironmentConfig.socket_url}?token=${accessToken}`;
-      console.debug('[SocketProvider] Connecting');
       setWebsocket(new WebSocket(uri));
     }
   }, [accessToken]);
@@ -76,12 +76,17 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({children}) => {
     if (obj.type === ReceivedMessageType.CHAT_MESSAGE) {
       const properties = obj.message as MessageProperties;
       const message = new Message(properties);
-      QueryManager.mergeConversationMessages(
+      QueryManager.mergeMessagesByConversation(
         queryClient,
         message.conversation,
         [message],
       );
+      // TODO: don't invalidate conversations after every message
       QueryManager.invalidateConversations(queryClient);
+    } else if (obj.type === ReceivedMessageType.FRIENDSHIP_MESSAGE) {
+      const properties = obj.message as FriendshipProperties;
+      const friendship = new Friendship(properties);
+      QueryManager.mergeFriendships(queryClient, [friendship]);
     } else {
       console.warn('[SocketProvider] unknown message:', obj);
     }

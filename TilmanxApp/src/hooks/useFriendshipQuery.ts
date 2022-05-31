@@ -5,6 +5,7 @@ import {
   useMutation,
 } from 'react-query';
 
+import {QueryManager} from '../lib/queryManager';
 import {
   FriendshipApi,
   UpstreamCreateFriendshipProperties,
@@ -15,7 +16,7 @@ export const useFriendshipsQuery = (
   options?: UseQueryOptions<ReadonlyArray<Friendship>>,
 ) => {
   return useQuery<ReadonlyArray<Friendship>>(
-    ['friendships'],
+    QueryManager.getFriendshipsKey(),
     async () => {
       const {data} = await new FriendshipApi().list();
       return data.map(friendship => new Friendship(friendship));
